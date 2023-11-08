@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<!-- Default Layout Import-->
+<html lang="en"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{layout/layout}"
+	  layout:fragment="Content"
+>
+
+    <head>
+        <title th:text="회사관리"></title>
+
+        <!-- 업무용 자바스크립트 (HEAD) 안에 위치 -->
+	    <script th:src="@{/js/system/company_detail.js}"></script>
+
+    </head>
+<body>
+	<div class="page-container">
+	<form name="registForm" id="registForm" method="post" enctype="multipart/form-data">
+		<div class="title-area">
+			<h2>회사관리</h2>
+			<ul class="location-area">
+				<li class="home" onclick="goMain();"></li>
+				<li>시스템관리</li>
+				<li class="now">회사관리</li>
+			</ul>
+		</div>
+		<!-- 기본 정보 영역 -->
+		<div class="title-area">
+			<h3>기본 정보</h3>
+			<div class="btn-wrap">
+				<div class="ui button btn-brown btn-go-list"> 목록</div>
+			</div>
+		</div>
+		<div class="detail-table-area">
+			<div class="ui form">
+				<table class="ui celled table">
+					<colgroup>
+						<col style="width:12%;">
+						<col style="width:40%;">
+						<col style="width:12%;">
+						<col style="width:auto;">
+					</colgroup>
+					<tbody>
+					<tr>
+						<th scope="row">
+							<label class="required">회사코드</label>
+						</th>
+						<td colspan="3">
+							<div class="fields">
+								<div class="three wide field">
+									<input type="hidden" name="companySeq" id="companySeq" value="0">
+									<input type="text" name="companyCd" id="companyCd">
+								</div>
+								<div class="thirteen wide field">
+									<div class="btn-wrap">
+										<input type="hidden" name="dupChkYn" id="dupChkYn">
+										<div class="ui button btn-black-line btn-check-company">중복확인</div>
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">
+							<label class="required">회사명(국문)</label>
+						</th>
+						<td>
+							<div class="fields">
+								<div class="seven wide field">
+									<input type="text" name="companyNm" id="companyNm" />
+								</div>
+							</div>
+						</td>
+						<th scope="row">
+							<label>회사명(영문)</label>
+						</th>
+						<td>
+							<div class="fields">
+								<div class="seven wide field">
+									<input type="text" name="companyNmEn" id="companyNmEn" />
+								</div>
+							</div>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- //기본 정보 영역 -->
+		<!-- 사용 정보 영역 -->
+		<div class="title-area">
+			<h3>사용 정보</h3>
+		</div>
+		<div class="detail-table-area">
+			<div class="ui form">
+				<table class="ui celled table">
+					<colgroup>
+						<col style="width:12%;">
+						<col style="width:40%;">
+						<col style="width:12%;">
+						<col style="width:auto;">
+					</colgroup>
+					<tbody>
+					<tr>
+						<th scope="row">
+							<label>사용여부</label>
+						</th>
+						<td colspan="3">
+							<div class="fields">
+								<div class="three wide field">
+									<div class="ui selection dropdown d-useYn">
+										<input type="hidden" name="useYn" id="useYn">
+										<div class="default text">선택</div>
+										<i class="dropdown icon"></i>
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">
+							<label>사용 시작일</label>
+						</th>
+						<td>
+							<div class="fields">
+								<div class="seven wide field">
+									<div class="calendar-area">
+										<div class="field">
+											<div class="ui calendar" id="rangestart">
+												<div class="ui input right icon">
+													<i class="calendar icon"></i>
+													<input type="text" name="useStartDt" id="useStartDt" />
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</td>
+						<th scope="row">
+							<label>사용 종료일</label>
+						</th>
+						<td>
+							<div class="fields">
+								<div class="seven wide field">
+									<div class="calendar-area">
+										<div class="field">
+											<div class="ui calendar" id="rangeend">
+												<div class="ui input right icon">
+													<i class="calendar icon"></i>
+													<input type="text" name="useEndDt" id="useEndDt" />
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- //사용 정보 영역 -->
+		<!-- 부가 정보 영역 -->
+		<div class="title-area">
+			<h3>부가 정보</h3>
+		</div>
+		<div class="detail-table-area">
+			<div class="ui form">
+				<table class="ui celled table">
+					<colgroup>
+						<col style="width:12%;">
+						<col style="width:auto;">
+					</colgroup>
+					<tbody>
+					<tr>
+						<th scope="row">
+							<label class="required">회사 로고</label>
+						</th>
+						<td>
+							<div class="fields">
+								<div class="six wide field">
+									<input type="file" name="logoFile" id="logoFile">
+									<input type="text" class="blind" name="companyLogoPath" id="companyLogoPath" readonly>
+								</div>
+								<div class="two wide field">
+									<div class="btn-wrap">
+										<div class="ui button btn-black-line btn-cancel-file">
+											취소
+										</div>
+									</div>
+								</div>
+								<div>
+									<input type="hidden" name="companyLogoFileNm" id="companyLogoFileNm">
+									<a id="companyLogoFile" style="font-size: 18px;font-weight: bold;"></a>
+								</div>
+							</div>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- //부가 정보 영역 -->
+		<!-- 이력 정보 영역 -->
+		<div class="title-area">
+			<h3>이력 정보</h3>
+		</div>
+		<div class="detail-table-area">
+			<div class="ui form">
+				<table class="ui celled table">
+					<colgroup>
+						<col style="width:12%;">
+						<col style="width:38%;">
+						<col style="width:12%;">
+						<col style="width:auto;">
+					</colgroup>
+					<tbody>
+					<tr>
+						<th scope="row">
+							<label>등록자/등록일시</label>
+						</th>
+						<td>
+							<div class="fields">
+								<div class="sixteen wide field">
+									<input type="text" name="regUserNm" id="regUserNm" readonly>
+								</div>
+								<div class="sixteen wide field">
+									<input type="text" name="regDt" id="regDt" readonly>
+								</div>
+							</div>
+						</td>
+						<th scope="row">
+							<label>수정자/수정일시</label>
+						</th>
+						<td colspan="2">
+							<div class="fields">
+								<div class="sixteen wide field">
+									<input type="text" id="modUserNm" name="modUserNm" readonly>
+								</div>
+								<div class="sixteen wide field">
+									<input type="text" id="modDt" name="modDt" readonly>
+								</div>
+							</div>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- //이력 정보 영역 -->
+
+		<!-- 상세 테이블 하단 버튼 영역 -->
+		<!-- [dev]_ 버튼이 우측에만 올 경우, "justify-right" 클래스 추가 / 좌측은 클래스 없음 -->
+		<div class="btn-area tbl-bottom justify-right">
+			<div class="btn-wrap"></div>
+			<div class="btn-wrap">
+				<div class="ui button btn-darkgray btn-save-company">저장</div>
+				<div class="ui button btn-darkgray btn-delt-company blind">삭제</div>
+			</div>
+		</div>
+		<!-- //상세 테이블 하단 버튼 영역 -->
+	</form>
+	</div>
+</body>
+</html>

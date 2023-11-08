@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.rmsoft.bms.voc.mapper.VocCustMapper">
+
+    <!-- 고객정보 목록 조회 -->
+    <select id="getVocCustList" resultType="voc.voccust">
+        SELECT cust_seq             AS "custSeq",
+               hotel_cd             AS "hotelCd",
+               cust_no              AS "custNo",
+               cust_nm              AS "custNm",
+               cust_nm_en           AS "custNmEn",
+               tel_no               AS "telNo",
+               email_addr           AS "emailAddr",
+               del_yn               AS "delYn",
+               reg_user_no          AS "regUserNo",
+               reg_dt               AS "regDt",
+               mod_user_no          AS "modUserNo",
+               mod_dt               AS "modDt"
+          FROM tb_voc_cust
+         <where>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.custSeq)">AND cust_seq = #{p.custSeq} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.hotelCd)">AND hotel_cd = #{p.hotelCd} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.custNo)">AND cust_no = #{p.custNo} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.custNm)">AND cust_nm = #{p.custNm} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.custNmEn)">AND cust_nm_en = #{p.custNmEn} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.telNo)">AND tel_no = #{p.telNo} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.emailAddr)">AND email_addr = #{p.emailAddr} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.delYn)">AND del_yn = #{p.delYn} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.regUserNo)">AND reg_user_no = #{p.regUserNo} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.regDt)">AND reg_dt = #{p.regDt} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.modUserNo)">AND mod_user_no = #{p.modUserNo} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.modDt)">AND mod_dt = #{p.modDt} </if>
+         </where>
+         ORDER BY lsupd_dt DESC
+         <if test="offset &gt; -1">
+         LIMIT #{offset}, #{length}
+         </if>
+    </select>
+    <select id="getVocCustListCount" resultType="long">
+        SELECT COUNT(1)
+          FROM tb_voc_cust
+        <where>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(custSeq)">AND cust_seq = #{custSeq} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(hotelCd)">AND hotel_cd = #{hotelCd} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(custNo)">AND cust_no = #{custNo} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(custNm)">AND cust_nm = #{custNm} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(custNmEn)">AND cust_nm_en = #{custNmEn} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(telNo)">AND tel_no = #{telNo} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(emailAddr)">AND email_addr = #{emailAddr} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(delYn)">AND del_yn = #{delYn} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(regUserNo)">AND reg_user_no = #{regUserNo} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(regDt)">AND reg_dt = #{regDt} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(modUserNo)">AND mod_user_no = #{modUserNo} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(modDt)">AND mod_dt = #{modDt} </if>
+        </where>
+    </select>
+
+	<!-- 고객정보 상세 조회 -->
+    <select id="getVocCust" resultType="voc.voccust">
+        SELECT cust_seq             AS "custSeq",
+               hotel_cd             AS "hotelCd",
+               cust_no              AS "custNo",
+               cust_nm              AS "custNm",
+               cust_nm_en           AS "custNmEn",
+               tel_no               AS "telNo",
+               email_addr           AS "emailAddr",
+               del_yn               AS "delYn",
+               reg_user_no          AS "regUserNo",
+               reg_dt               AS "regDt",
+               mod_user_no          AS "modUserNo",
+               mod_dt               AS "modDt"
+          FROM tb_voc_cust A
+         <where>
+           cust_seq = #{custSeq}
+         </where>
+    </select>
+
+	<!-- 고객정보 등록 -->
+    <insert id="mergeVocCust">
+        MERGE INTO tb_voc_cust TGT
+        USING
+        (
+            SELECT
+                #{custSeq} AS "cust_seq",
+                #{hotelCd} AS "hotel_cd",
+                #{custNo} AS "cust_no",
+                #{custNm} AS "cust_nm",
+                #{custNmEn} AS "cust_nm_en",
+                #{telNo} AS "tel_no",
+                #{emailAddr} AS "email_addr",
+                #{delYn} AS "del_yn",
+                #{regUserNo} AS "reg_user_no",
+                #{regDt} AS "reg_dt",
+                #{modUserNo} AS "mod_user_no",
+                #{modDt} AS "mod_dt"
+            FROM db_root
+        ) SRC
+        ON src.cust_seq = tgt.cust_seq
+        WHEN MATCHED THEN
+            UPDATE SET
+                hotel_cd             = src.hotel_cd,
+                cust_no              = src.cust_no,
+                cust_nm              = src.cust_nm,
+                cust_nm_en           = src.cust_nm_en,
+                tel_no               = src.tel_no,
+                email_addr           = src.email_addr,
+                del_yn               = src.del_yn,
+                reg_user_no          = src.reg_user_no,
+                reg_dt               = src.reg_dt,
+                mod_user_no          = src.mod_user_no,
+                mod_dt               = src.mod_dt
+        WHEN NOT MATCHED THEN
+            INSERT
+            (
+                cust_seq,
+                hotel_cd,
+                cust_no,
+                cust_nm,
+                cust_nm_en,
+                tel_no,
+                email_addr,
+                del_yn,
+                reg_user_no,
+                reg_dt,
+                mod_user_no,
+                mod_dt
+            )
+            VALUES
+            (
+                src.cust_seq,
+                src.hotel_cd,
+                src.cust_no,
+                src.cust_nm,
+                src.cust_nm_en,
+                src.tel_no,
+                src.email_addr,
+                src.del_yn,
+                src.reg_user_no,
+                src.reg_dt,
+                src.mod_user_no,
+                src.mod_dt
+            )
+    </insert>
+
+	<!-- 고객정보 삭제 -->
+    <update id="deleteVocCust">
+        UPDATE tb_voc_cust
+           SET use_at = 'N'
+         <where>
+             cust_seq=#{custSeq}
+         </where>
+    </update>
+
+</mapper>

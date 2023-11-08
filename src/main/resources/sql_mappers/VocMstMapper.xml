@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.rmsoft.bms.voc.mapper.VocMstMapper">
+
+    <!-- VOC마스터 목록 조회 -->
+    <select id="getVocMstList" resultType="voc.vocmst">
+        SELECT hotel_cd             AS "hotelCd",
+               voc_id               AS "vocId",
+               cust_no              AS "custNo",
+               voc_case_cd          AS "vocCaseCd",
+               voc_type_cd1         AS "vocTypeCd1",
+               voc_type_cd2         AS "vocTypeCd2",
+               voc_type_cd3         AS "vocTypeCd3",
+               rcpt_chnn_cd         AS "rcptChnnCd",
+               source_cd            AS "sourceCd",
+               source_dt            AS "sourceDt",
+               cust_reply_yn        AS "custReplyYn",
+               cust_reply_cd        AS "custReplyCd",
+               voc_title            AS "vocTitle",
+               voc_cont             AS "vocCont",
+               imme_act_yn          AS "immeActYn",
+               voc_act_type_cd      AS "vocActTypeCd",
+               voc_act_dt           AS "vocActDt",
+               voc_act_user_no      AS "vocActUserNo",
+               voc_act_cont         AS "vocActCont",
+               voc_status_cd        AS "vocStatusCd",
+               anonym_cust_yn       AS "anonymCustYn",
+               del_yn               AS "delYn",
+               reg_user_no          AS "regUserNo",
+               reg_dt               AS "regDt",
+               mod_user_no          AS "modUserNo",
+               mod_dt               AS "modDt"
+          FROM tb_voc_mst
+         <where>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.hotelCd)">AND hotel_cd = #{p.hotelCd} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.vocId)">AND voc_id = #{p.vocId} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.custNo)">AND cust_no = #{p.custNo} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.vocCaseCd)">AND voc_case_cd = #{p.vocCaseCd} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.vocTypeCd1)">AND voc_type_cd1 = #{p.vocTypeCd1} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.vocTypeCd2)">AND voc_type_cd2 = #{p.vocTypeCd2} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.vocTypeCd3)">AND voc_type_cd3 = #{p.vocTypeCd3} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.rcptChnnCd)">AND rcpt_chnn_cd = #{p.rcptChnnCd} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.sourceCd)">AND source_cd = #{p.sourceCd} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.sourceDt)">AND source_dt = #{p.sourceDt} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.custReplyYn)">AND cust_reply_yn = #{p.custReplyYn} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.custReplyCd)">AND cust_reply_cd = #{p.custReplyCd} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.vocTitle)">AND voc_title = #{p.vocTitle} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.vocCont)">AND voc_cont = #{p.vocCont} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.immeActYn)">AND imme_act_yn = #{p.immeActYn} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.vocActTypeCd)">AND voc_act_type_cd = #{p.vocActTypeCd} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.vocActDt)">AND voc_act_dt = #{p.vocActDt} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.vocActUserNo)">AND voc_act_user_no = #{p.vocActUserNo} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.vocActCont)">AND voc_act_cont = #{p.vocActCont} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.vocStatusCd)">AND voc_status_cd = #{p.vocStatusCd} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.anonymCustYn)">AND anonym_cust_yn = #{p.anonymCustYn} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.delYn)">AND del_yn = #{p.delYn} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.regUserNo)">AND reg_user_no = #{p.regUserNo} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.regDt)">AND reg_dt = #{p.regDt} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.modUserNo)">AND mod_user_no = #{p.modUserNo} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.modDt)">AND mod_dt = #{p.modDt} </if>
+         </where>
+         ORDER BY lsupd_dt DESC
+         <if test="offset &gt; -1">
+         LIMIT #{offset}, #{length}
+         </if>
+    </select>
+    <select id="getVocMstListCount" resultType="long">
+        SELECT COUNT(1)
+          FROM tb_voc_mst
+        <where>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(hotelCd)">AND hotel_cd = #{hotelCd} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(vocId)">AND voc_id = #{vocId} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(custNo)">AND cust_no = #{custNo} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(vocCaseCd)">AND voc_case_cd = #{vocCaseCd} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(vocTypeCd1)">AND voc_type_cd1 = #{vocTypeCd1} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(vocTypeCd2)">AND voc_type_cd2 = #{vocTypeCd2} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(vocTypeCd3)">AND voc_type_cd3 = #{vocTypeCd3} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(rcptChnnCd)">AND rcpt_chnn_cd = #{rcptChnnCd} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(sourceCd)">AND source_cd = #{sourceCd} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(sourceDt)">AND source_dt = #{sourceDt} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(custReplyYn)">AND cust_reply_yn = #{custReplyYn} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(custReplyCd)">AND cust_reply_cd = #{custReplyCd} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(vocTitle)">AND voc_title = #{vocTitle} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(vocCont)">AND voc_cont = #{vocCont} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(immeActYn)">AND imme_act_yn = #{immeActYn} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(vocActTypeCd)">AND voc_act_type_cd = #{vocActTypeCd} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(vocActDt)">AND voc_act_dt = #{vocActDt} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(vocActUserNo)">AND voc_act_user_no = #{vocActUserNo} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(vocActCont)">AND voc_act_cont = #{vocActCont} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(vocStatusCd)">AND voc_status_cd = #{vocStatusCd} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(anonymCustYn)">AND anonym_cust_yn = #{anonymCustYn} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(delYn)">AND del_yn = #{delYn} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(regUserNo)">AND reg_user_no = #{regUserNo} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(regDt)">AND reg_dt = #{regDt} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(modUserNo)">AND mod_user_no = #{modUserNo} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(modDt)">AND mod_dt = #{modDt} </if>
+        </where>
+    </select>
+
+	<!-- VOC마스터 상세 조회 -->
+    <select id="getVocMst" resultType="voc.vocmst">
+        SELECT hotel_cd             AS "hotelCd",
+               voc_id               AS "vocId",
+               cust_no              AS "custNo",
+               voc_case_cd          AS "vocCaseCd",
+               voc_type_cd1         AS "vocTypeCd1",
+               voc_type_cd2         AS "vocTypeCd2",
+               voc_type_cd3         AS "vocTypeCd3",
+               rcpt_chnn_cd         AS "rcptChnnCd",
+               source_cd            AS "sourceCd",
+               source_dt            AS "sourceDt",
+               cust_reply_yn        AS "custReplyYn",
+               cust_reply_cd        AS "custReplyCd",
+               voc_title            AS "vocTitle",
+               voc_cont             AS "vocCont",
+               imme_act_yn          AS "immeActYn",
+               voc_act_type_cd      AS "vocActTypeCd",
+               voc_act_dt           AS "vocActDt",
+               voc_act_user_no      AS "vocActUserNo",
+               voc_act_cont         AS "vocActCont",
+               voc_status_cd        AS "vocStatusCd",
+               anonym_cust_yn       AS "anonymCustYn",
+               del_yn               AS "delYn",
+               reg_user_no          AS "regUserNo",
+               reg_dt               AS "regDt",
+               mod_user_no          AS "modUserNo",
+               mod_dt               AS "modDt"
+          FROM tb_voc_mst A
+         <where>
+           hotel_cd = #{hotelCd}
+           AND voc_id = #{vocId}
+         </where>
+    </select>
+
+	<!-- VOC마스터 등록 -->
+    <insert id="mergeVocMst">
+        MERGE INTO tb_voc_mst TGT
+        USING
+        (
+            SELECT
+                #{hotelCd} AS "hotel_cd",
+                #{vocId} AS "voc_id",
+                #{custNo} AS "cust_no",
+                #{vocCaseCd} AS "voc_case_cd",
+                #{vocTypeCd1} AS "voc_type_cd1",
+                #{vocTypeCd2} AS "voc_type_cd2",
+                #{vocTypeCd3} AS "voc_type_cd3",
+                #{rcptChnnCd} AS "rcpt_chnn_cd",
+                #{sourceCd} AS "source_cd",
+                #{sourceDt} AS "source_dt",
+                #{custReplyYn} AS "cust_reply_yn",
+                #{custReplyCd} AS "cust_reply_cd",
+                #{vocTitle} AS "voc_title",
+                #{vocCont} AS "voc_cont",
+                #{immeActYn} AS "imme_act_yn",
+                #{vocActTypeCd} AS "voc_act_type_cd",
+                #{vocActDt} AS "voc_act_dt",
+                #{vocActUserNo} AS "voc_act_user_no",
+                #{vocActCont} AS "voc_act_cont",
+                #{vocStatusCd} AS "voc_status_cd",
+                #{anonymCustYn} AS "anonym_cust_yn",
+                #{delYn} AS "del_yn",
+                #{regUserNo} AS "reg_user_no",
+                #{regDt} AS "reg_dt",
+                #{modUserNo} AS "mod_user_no",
+                #{modDt} AS "mod_dt"
+            FROM db_root
+        ) SRC
+        ON src.hotel_cd = tgt.hotel_cd AND src.voc_id = tgt.voc_id
+        WHEN MATCHED THEN
+            UPDATE SET
+                cust_no              = src.cust_no,
+                voc_case_cd          = src.voc_case_cd,
+                voc_type_cd1         = src.voc_type_cd1,
+                voc_type_cd2         = src.voc_type_cd2,
+                voc_type_cd3         = src.voc_type_cd3,
+                rcpt_chnn_cd         = src.rcpt_chnn_cd,
+                source_cd            = src.source_cd,
+                source_dt            = src.source_dt,
+                cust_reply_yn        = src.cust_reply_yn,
+                cust_reply_cd        = src.cust_reply_cd,
+                voc_title            = src.voc_title,
+                voc_cont             = src.voc_cont,
+                imme_act_yn          = src.imme_act_yn,
+                voc_act_type_cd      = src.voc_act_type_cd,
+                voc_act_dt           = src.voc_act_dt,
+                voc_act_user_no      = src.voc_act_user_no,
+                voc_act_cont         = src.voc_act_cont,
+                voc_status_cd        = src.voc_status_cd,
+                anonym_cust_yn       = src.anonym_cust_yn,
+                del_yn               = src.del_yn,
+                reg_user_no          = src.reg_user_no,
+                reg_dt               = src.reg_dt,
+                mod_user_no          = src.mod_user_no,
+                mod_dt               = src.mod_dt
+        WHEN NOT MATCHED THEN
+            INSERT
+            (
+                hotel_cd,
+                voc_id,
+                cust_no,
+                voc_case_cd,
+                voc_type_cd1,
+                voc_type_cd2,
+                voc_type_cd3,
+                rcpt_chnn_cd,
+                source_cd,
+                source_dt,
+                cust_reply_yn,
+                cust_reply_cd,
+                voc_title,
+                voc_cont,
+                imme_act_yn,
+                voc_act_type_cd,
+                voc_act_dt,
+                voc_act_user_no,
+                voc_act_cont,
+                voc_status_cd,
+                anonym_cust_yn,
+                del_yn,
+                reg_user_no,
+                reg_dt,
+                mod_user_no,
+                mod_dt
+            )
+            VALUES
+            (
+                src.hotel_cd,
+                src.voc_id,
+                src.cust_no,
+                src.voc_case_cd,
+                src.voc_type_cd1,
+                src.voc_type_cd2,
+                src.voc_type_cd3,
+                src.rcpt_chnn_cd,
+                src.source_cd,
+                src.source_dt,
+                src.cust_reply_yn,
+                src.cust_reply_cd,
+                src.voc_title,
+                src.voc_cont,
+                src.imme_act_yn,
+                src.voc_act_type_cd,
+                src.voc_act_dt,
+                src.voc_act_user_no,
+                src.voc_act_cont,
+                src.voc_status_cd,
+                src.anonym_cust_yn,
+                src.del_yn,
+                src.reg_user_no,
+                src.reg_dt,
+                src.mod_user_no,
+                src.mod_dt
+            )
+    </insert>
+
+	<!-- VOC마스터 삭제 -->
+    <update id="deleteVocMst">
+        UPDATE tb_voc_mst
+           SET use_at = 'N'
+         <where>
+             hotel_cd=#{hotelCd}
+             AND voc_id=#{vocId}
+         </where>
+    </update>
+
+</mapper>

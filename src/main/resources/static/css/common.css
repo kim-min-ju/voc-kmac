@@ -1,0 +1,32 @@
+/* align style */
+.clear {clear:both}
+.clearfix {display:inline-block;width:100%}
+.clearfix:after {content:"";display:block;visibility:hidden;clear:both}
+.ft_left {display:block;float:left}
+.ft_right {display:block;float:right}
+.left {text-align:left !important}
+.right {text-align:right !important}
+.center {text-align:center !important}
+.inline {display:inline}
+.vtop {vertical-align:top !important}
+.vmiddle {vertical-align:middle !important}
+.vtop {vertical-align:top}
+.vbottom {vertical-align:bottom !important}
+
+.hide {display:none !important}
+
+/* color style */
+.red{color:#f14f4f}
+.blue{color:#4771c2}
+.bold{font-weight:bold}
+.black{color:#000000;}
+
+/* background color style */
+.bg-red{background-color:#f14f4f}
+.bg-blue{background-color:#4771c2}
+.bg-black{background-color:#000000;}
+
+.mg-b20 { margin-bottom: 20px; }
+.coupon-wrap .btn-wrap button { width: 320px; }
+
+

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<!-- Default Layout Import-->
+<html lang="en"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{layout/layout}"
+	  layout:fragment="Content"
+>
+
+    <head>
+        <title th:text="권한관리"></title>
+
+        <!-- 업무용 자바스크립트 (HEAD) 안에 위치 -->
+	    <script th:src="@{/js/system/auth.js}"></script>
+
+    </head>
+<body>
+	<div class="page-container">
+		<div class="title-area">
+			<h2>권한관리</h2>
+			<ul class="location-area">
+				<li class="home" onclick="goMain();"></li>
+				<li>시스템관리</li>
+				<li class="now">권한관리</li>
+			</ul>
+		</div>
+		<div class="search-area">
+		<form id="searchForm" method="post">
+			<div class="search-inner">
+				<div class="ui form">
+					<div class="fields">
+						<div class="four wide field">
+							<label>권한코드</label>
+							<input type="text" id="authCd" name="authNm" placeholder="권한코드를 입력하세요." >
+						</div>
+						<div class="four wide field">
+							<label>권한명</label>
+							<input type="text" id="authNm" name="authNm" placeholder="권한명을 입력하세요." >
+						</div>
+						<div class="four wide field">
+							<label>사용여부</label>
+							<div class="ui selection dropdown">
+								<input type="hidden" id="useYn" name="useYn">
+								<div class="default text">사용여부를 선택하세요.</div>
+								<i class="dropdown icon"></i>
+								<div class="menu">
+									<div class="item" data-value="Y">Y</div>
+									<div class="item" data-value="N">N</div>
+								</div>
+							</div>
+						</div>
+						<!-- [dev] 검색영역 내 조회 버튼은 "two wide field btn-search" 클래스 사용 -->
+						<div class="two wide field btn-search">
+							<div class="ui button">
+								<i class="search icon"></i>
+								조회
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		</div>
+		<div class="btn-area tbl-top">
+			<div class="btn-wrap"></div>
+
+			<div class="btn-wrap">
+				<div class="ui button btn-darkgray btn-add">추가</div>
+				<div class="ui button btn-darkgray btn-dtl">상세</div>
+			</div>
+		</div>
+
+		<div class="table-area">
+			<div class="ui form">
+				<table id="listDataTable" class="display stripe hover">
+					<colgroup>
+						<col style="width:5%">
+						<col style="width:8%">
+						<col style="width:8%">
+						<col style="width:20%">
+						<col style="width:8%">
+						<col style="width:8%">
+						<col style="width:13%">
+						<col style="width:8%">
+						<col style="width:13%">
+					</colgroup>
+					<thead>
+					<tr>
+						<th>선택</th>
+						<th>권한코드</th>
+						<th>권한명</th>
+						<th>권한설명</th>
+						<th>사용여부</th>
+						<th>등록자</th>
+						<th>등록일시</th>
+						<th>수정자</th>
+						<th>수정일시</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<!-- 상세모달창 -->
+	<div class="ui modal modal-auth" style="display:none">
+		<i class="close icon"></i>
+		<div class="header">권한관리</div>
+		<div class="content">
+			<div class="search-area">
+				<div class="search-inner">
+					<div class="ui form">
+						<form id="registForm" method="post">
+						<div class="fields">
+							<div class="four wide field">
+								<label>권한코드</label>
+								<input type="hidden" id="authSeq" name="authSeq">
+								<input type="text" name="authCd" placeholder="권한코드를 입력하세요." >
+							</div>
+							<div class="seven wide field">
+								<label>권한명</label>
+								<input type="text" name="authNm" placeholder="권한명을 입력하세요." >
+							</div>
+							<div class="five wide field">
+								<label>사용여부</label>
+								<div class="ui selection dropdown">
+									<input type="hidden" id="useYn" name="useYn">
+									<div class="default text">사용여부를 선택하세요.</div>
+									<i class="dropdown icon"></i>
+									<div class="menu">
+										<div class="item" data-value="Y">Y</div>
+										<div class="item" data-value="N">N</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="fields">
+							<div class="sixteen wide field">
+								<label>권한설명</label>
+								<input type="text" name="authDesc" placeholder="권한설명을 입력하세요." >
+							</div>
+						</div>
+						<div class="fields">
+							<div class="seven wide field">
+								<label>등록자/등록일시</label>
+								<input type="text" name="regUserNm" style="width:100px" value="" readonly> <input type="text" name="regDt" style="width:200px"  value="" readonly>
+							</div>
+							<div class="seven wide field">
+								<label>수정자/수정일시</label>
+								<input type="text" name="modUserNm" style="width:100px"  value="" readonly> <input type="text" name="modDt" style="width:200px"  value="" readonly>
+							</div>
+						</div>
+
+						<div class="fields">
+							<div class="two field btn-search">
+								<div class="ui button btn-save">저장</div>
+							</div>
+							<div class="two field btn-search">
+								<div class="ui button btn-delt">삭제</div>
+							</div>
+						</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>
