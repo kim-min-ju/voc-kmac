@@ -20,25 +20,74 @@ let ObjectUtil = {
     }
 }
 let AjaxUtil = {
-    get: function (url, param, callback) {
+    get: function (url, param, callback, async, errCallback) {
+        ObjectUtil.default(async, true);
         $.ajax({
             type:"GET",
             dataType:"JSON",
             url : url,
             data : param,
             contentType: "application/json",
-            async: true,
+            async: async,
             success : function(data) {
-                if(data.errorCode == '0000') {
+                console.log(data);
+                if(data.messageCode == '0000') {
                     if(callback != null) callback(data);
                 }
             },
             complete: function() {
             },
             error : function(xhr) {
+                _ajaxErrorProcess(xhr, errCallback);
+            }
+        });
+    },
+    post: function (url, param, callback, async, errCallback) {
+        $.ajax({
+            type:"POST",
+            dataType:"JSON",
+            url : url,
+            data : param,
+            contentType: "application/json",
+            async: true,
+            success : function(data) {
+                console.log(data);
+                if(data.messageCode == '0000') {
+                    if(callback != null) callback(data);
+                } else {
+                    alert(data.message);
+                }
+            },
+            complete: function() {
+            },
+            error : function(xhr) {
+                _ajaxErrorProcess(xhr, errCallback);
             }
         });
     }
+}
+
+/**
+ * ajax 함수 공통 에러 처리
+ * TODO 오류콜백 추가 => 결제 RuntimeException 상황에서도 처리해야함
+ */
+function _ajaxErrorProcess(xhr, errCallback) {
+    //console.log('xhr',xhr);
+    let msg = "";
+    let errMessage = "";
+
+    if (xhr.status === 0) {
+        msg = 'No connection to the API server';
+    } else if (xhr.status == 404) {
+        msg = 'Requested page not found. [404]';
+    } else if (xhr.status == 500) {
+        msg = 'Internal Server Error [500]';
+    } else if(!ObjectUtil.isEmpty(xhr.responseJSON) && !ObjectUtil.isEmpty(xhr.responseJSON.message)) {
+        errMessage = xhr.responseJSON.message;
+    }
+
+    if(ObjectUtil.isEmpty(errMessage)) errMessage = msg + '\n시스템 오류입니다. 관리자에게 문의하세요.';
+    alert(errMessage);
 }
 
 let StringUtil = {
@@ -97,6 +146,49 @@ let Util = {
         //$(".time-wrap .day").html(month + "/" + day + divider + "(" + dayName + ")");
         //$(".time-wrap .time").text(hour + ":" + minutes);
     },
+    /**----------------------------------------------------------------------------------*
+     * @Function 	: Util.dateFormat(date, delimiter);
+     * @Desc 		: 날짜형식 적용.
+     * @param 		: date : 날짜값
+     * @param 		: delimiter : 날짜값
+     * ---------------------------------------------------------------------------------*/
+    dateFormat : function(date, delimiter) {
+        let d = date.replace(/[^0-9]/g, "");
+        if(ObjectUtil.isEmpty(d) || d.length != 8) return date;
+        if(ObjectUtil.isEmpty(delimiter)) delimiter = "-";
+
+        return d.substring(0, 4) + delimiter + d.substring(4, 6) + delimiter + d.substring(6, 8);
+    },
+    /**----------------------------------------------------------------------------------*
+     * @Function 	: Util.timeFormat(ev);
+     * @Desc 		: 입력 format 지정한다.
+     * @param 		: ev : 날짜값
+     * ---------------------------------------------------------------------------------*/
+    timeFormat : function(ev) {
+        if(ObjectUtil.isEmpty(ev) || ev.length != 4) return ev;
+        return ev.substring(0, 2) + ':' + ev.substring(2, 4);
+    },
+    /**----------------------------------------------------------------------------------*
+     * @Function 	: Util.getLastday(date);
+     * @Desc 		: 월의 마지막 날짜 가져오기
+     * @param 		: date - 대상일자
+     * ---------------------------------------------------------------------------------*/
+    getLastday : function(date) {
+        let d = date.replace(/[^0-9]/g, "");
+        if(ObjectUtil.isEmpty(d) || d.length < 6) return date;
+        let last = new Date(d.substring(0,4), d.substring(4,6), 0);
+        return last.getDate();
+    },
+    /**----------------------------------------------------------------------------------*
+     * @Function 	: Util.maxLengthCheck(object);
+     * @Desc 		: Number 타입 maxlength 적용하기
+     * @param 		: object - 대상 object
+     * ---------------------------------------------------------------------------------*/
+    maxLengthCheck : function(object){
+    if (object.value.length > object.maxLength){
+        object.value = object.value.slice(0, object.maxLength);
+    }
+}
 }
 
 let UIUtil = {
@@ -149,4 +241,189 @@ let UIUtil = {
             $targetObjects.datepicker(dpOptions);
         }
     },
+}
+
+let goMain = function() {
+    $(location).attr('href', '/main');
+}
+
+let goPage = function(url) {
+    $(location).attr('href', url);
+}
+
+let DropdownUtil = {
+    /**----------------------------------------------------------------------------------*
+     * @Function    : DropdownUtil.makeCodeList(companyCd, codeType, obj);
+     * @Desc        : dropdown용 공통코드 생성
+     * @param       : companyCd - 회사코드, codeType - 코드유형, obj - dropdown object
+     * ---------------------------------------------------------------------------------*/
+    makeCodeList : function(companyCd, codeType, obj) {
+        let param = {"codeType": codeType, "companyCd": companyCd};
+
+        AjaxUtil.get(
+            '/kmacvoc/v1/code/dropdown/list',
+            param,
+            function(result){
+                if(result && result.data){
+                    $(obj).dropdown({
+                        values: result.data,
+                        clearable: true
+                    });
+                }
+            }
+        );
+    },
+    /**----------------------------------------------------------------------------------*
+     * @Function    : DropdownUtil.makeCompList(obj);
+     * @Desc        : dropdown용 회사코드 생성
+     * @param       : obj - dropdown object
+     * ---------------------------------------------------------------------------------*/
+    makeCompList : function(obj) {
+        let param = {"useYn": "Y", "offset": -1};
+
+        AjaxUtil.get(
+            '/kmacvoc/v1/company/list',
+            param,
+            function(result){
+                if(result && result.data.list){
+                    result.data.list.map(function(item) {
+                        item.value = item.companyCd;
+                        item.name = item.companyNm;
+                    });
+                    $(obj).dropdown({
+                        values: result.data.list,
+                        clearable: true
+                    });
+
+                    //회사코드 default setting
+                    $(obj).dropdown('set selected', $SessionInfo.getCompanyCd());
+
+                    //전체관리자, 시스템관리자가 아닌경우, 회사선택 불가능하도록 처리
+                    if($SessionInfo.getUserAuth().indexOf('100') < 0 && $SessionInfo.getUserAuth().indexOf('900') < 0) {
+                        $(obj).addClass('disabled');
+                    }
+                }
+            }
+        );
+    },
+    /**----------------------------------------------------------------------------------*
+     * @Function    : DropdownUtil.makeAuthList(obj);
+     * @Desc        : dropdown용 권한코드 생성
+     * @param       : obj - dropdown object
+     * ---------------------------------------------------------------------------------*/
+    makeAuthList : function(obj) {
+        let param = {"useYn": "Y", "offset": -1};
+
+        AjaxUtil.get(
+            '/kmacvoc/v1/auth/list',
+            param,
+            function(result){
+                if(result && result.data.list){
+                    result.data.list.map(function(item) {
+                        item.value = item.authSeq;
+                        item.name = item.authNm;
+                    });
+                    $(obj).dropdown({
+                        values: result.data.list
+                    });
+                }
+            }
+        );
+    },
+    /**----------------------------------------------------------------------------------*
+     * @Function    : DropdownUtil.makeActUserList(companyCd, obj);
+     * @Desc        : dropdown용 권한코드 생성
+     * @param       : companyCd - 회사코드
+     * @param       : obj - dropdown object
+     * ---------------------------------------------------------------------------------*/
+    makeActUserList : function(companyCd, obj) {
+
+        AjaxUtil.get(
+            '/kmacvoc/v1/user/act/list/'+companyCd,
+            {},
+            function(result){
+                if(result && result.data){
+                    $(obj).dropdown({
+                        values: result.data,
+                        clearable: true
+                    });
+                }
+            }
+        );
+    },
+    /**----------------------------------------------------------------------------------*
+     * @Function    : DropdownUtil.makeYearList(obj);
+     * @Desc        : dropdown용 년도 생성
+     * @param       : obj - dropdown object
+     * ---------------------------------------------------------------------------------*/
+    makeYearList : function(obj) {
+        let year_list = [], year_data = {};
+        for(let i=2023; i<2030; i++) {
+            year_data = {};
+            year_data.name=i;
+            year_data.value=i;
+            year_list.push(year_data);
+        }
+
+        $(obj).dropdown({
+            values: year_list,
+            clearable: true
+        });
+    },
+    /**----------------------------------------------------------------------------------*
+     * @Function    : DropdownUtil.makeMonthList(obj);
+     * @Desc        : dropdown용 월 생성
+     * @param       : obj - dropdown object
+     * ---------------------------------------------------------------------------------*/
+    makeMonthList : function(obj) {
+        let month_list = [], month_data = {};
+        for(let i=1; i<13; i++) {
+            month_data = {};
+            month_data.name = i<10 ? '0'+i : i;
+            month_data.value = i<10 ? '0'+i : i;
+            month_list.push(month_data);
+        }
+
+        $(obj).dropdown({
+            values: month_list,
+            clearable: true
+        });
+    },
+    /**----------------------------------------------------------------------------------*
+     * @Function    : DropdownUtil.makeDayList(obj);
+     * @Desc        : dropdown용 일 생성
+     * @param       : obj - dropdown object
+     * ---------------------------------------------------------------------------------*/
+    makeDayList : function(obj) {
+        let day_list = [], day_data = {};
+        for(let i=1; i<32; i++) {
+            day_data = {};
+            day_data.name = i<10 ? '0'+i : i;
+            day_data.value = i<10 ? '0'+i : i;
+            day_list.push(day_data);
+        }
+
+        $(obj).dropdown({
+            values: day_list,
+            clearable: true
+        });
+    },
+}
+
+/**
+ * 세션정보
+ */
+let $SessionInfo = {
+    getUserSeq: function() {
+        return $('.header-info').find('#loginUserSeq').val();
+    },
+    getCompanyCd: function() {
+        return $('.header-info').find('#loginCompanyCd').val();
+    },
+    getUserId: function() {
+        return $('.header-info').find('#loginUserId').val();
+    },
+    getUserAuth: function() {
+        return $('.header-info').find('#loginUserAuth').val();
+    }
 }

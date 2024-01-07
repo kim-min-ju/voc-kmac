@@ -6,21 +6,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * 권한 ViewController 클래스
+ * 코드 ViewController 클래스
  * 
- * @ClassName AuthViewController.java
- * @Description 권한 ViewController 클래스
- * @author mjkim
+ * @ClassName CodeViewController.java
+ * @Description 코드 ViewController 클래스
+ * @codeor mjkim
  * @since 2023. 9. 18.
  *
  */
 @Controller
-@RequestMapping("/system/auth")
-public class AuthViewController {
+@RequestMapping("/system/code")
+public class CodeViewController {
 
     // 화면 오픈
     @GetMapping
     public String view(Model model) {
-        return "pages/system/auth";
+        return "pages/system/code";
     }
 }

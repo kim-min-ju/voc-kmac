@@ -8,29 +8,29 @@
 >
 
     <head>
-        <title th:text="유형별VOC현황"></title>
+        <title th:text="채널별VOC현황"></title>
 
         <!-- 업무용 자바스크립트 (HEAD) 안에 위치 -->
 		<script th:src="@{/js/voc/voc_common.js}"></script>
-	    <script th:src="@{/js/statistics/statistics_voctype.js}"></script>
+	    <script th:src="@{/js/statistics/statistics_channel.js}"></script>
 
     </head>
 <body>
 	<div class="page-container">
 		<div class="title-area">
-			<h2>유형별VOC현황</h2>
+			<h2>채널별VOC현황</h2>
 			<ul class="location-area">
 				<li class="home" onclick="goMain();"></li>
 				<li>VOC분석/통계</li>
-				<li class="now">유형별VOC현황</li>
+				<li class="now">채널별VOC현황</li>
 			</ul>
 		</div>
 		<div class="search-area">
-		<form id="searchForm" method="post">
+		<form id="searchForm">
 			<div class="search-inner">
 				<div class="ui form">
 					<div class="fields">
-						<div class="three wide field">
+						<div class="four wide field">
 							<label>회사</label>
 							<div class="ui selection dropdown d-companyCd">
 								<input type="hidden" name="companyCd" id="companyCd">
@@ -38,41 +38,7 @@
 								<i class="dropdown icon"></i>
 							</div>
 						</div>
-						<div class="thirteen wide field">
-							<label>VOC 유형</label>
-							<div class="inline">
-								<div class="ui selection dropdown d-vocTypeCd1">
-									<input type="hidden" name="vocTypeCd1" id="vocTypeCd1">
-									<div class="default text">선택</div>
-									<i class="dropdown icon"></i>
-								</div>
-								<div class="ui checkbox ml_15 mr_5 chk-vocTypeCd2" id="2">
-									<input type="checkbox" name="vocTypeCd2Yn" id="vocTypeCd2Yn" value="" tabindex="0" class="hidden">
-								</div>
-								<div class="ui selection dropdown d-vocTypeCd2 disabled">
-									<input type="hidden" name="vocTypeCd2" id="vocTypeCd2">
-									<div class="default text">선택</div>
-									<i class="dropdown icon"></i>
-								</div>
-								<div class="ui checkbox ml_15 mr_5 chk-vocTypeCd3" id="3">
-									<input type="checkbox" name="vocTypeCd3Yn" id="vocTypeCd3Yn" value="" tabindex="0" class="hidden">
-								</div>
-								<div class="ui selection dropdown d-vocTypeCd3 disabled">
-									<input type="hidden" name="vocTypeCd3" id="vocTypeCd3">
-									<div class="default text">선택</div>
-									<i class="dropdown icon"></i>
-								</div>
-							</div>
-						</div>
-						<div class="two wide field btn-search">
-							<div class="ui button">
-								<i class="search icon"></i>
-								조회
-							</div>
-						</div>
-					</div>
-					<div class="fields">
-						<div class="four wide field">
+						<div class="seven wide field">
 							<!-- [dev] 캘린더 영역 wrapper는 "calendar-area" 클래스 사용 -->
 							<div class="calendar-area">
 								<div class="field">
@@ -96,12 +62,30 @@
 								</div>
 							</div>
 						</div>
-						<div class="three wide field">
-							<label>접수 채널</label>
-							<div class="ui selection dropdown d-rcptChnnCd">
-								<input type="hidden" name="rcptChnnCd" id="rcptChnnCd">
-								<div class="default text">선택</div>
-								<i class="dropdown icon"></i>
+						<div class="sixteen wide field">
+							<label>VOC 유형</label>
+							<div class="inline">
+								<div class="ui selection dropdown d-vocTypeCd1">
+									<input type="hidden" name="vocTypeCd1" id="vocTypeCd1">
+									<div class="default text">선택</div>
+									<i class="dropdown icon"></i>
+								</div>
+								<div class="ui selection dropdown d-vocTypeCd2">
+									<input type="hidden" name="vocTypeCd2" id="vocTypeCd2">
+									<div class="default text">선택</div>
+									<i class="dropdown icon"></i>
+								</div>
+								<div class="ui selection dropdown d-vocTypeCd3">
+									<input type="hidden" name="vocTypeCd3" id="vocTypeCd3">
+									<div class="default text">선택</div>
+									<i class="dropdown icon"></i>
+								</div>
+							</div>
+						</div>
+						<div class="two wide field btn-search">
+							<div class="ui button">
+								<i class="search icon"></i>
+								조회
 							</div>
 						</div>
 					</div>
@@ -111,20 +95,15 @@
 		</div>
 		<!-- // 검색 영역 -->
 
-		<div class="btn-area tbl-top justify-right">
-			<div class="btn-wrap">
-				<div class="ui button btn-darkgray">엑셀 다운로드</div>
-			</div>
-		</div>
 		<div class="table-area">
 			<div class="ui form">
-				<table class="ui table tbl-statistics" id="listDataTableVoctype">
+				<table class="ui table tbl-statistics" id="listDataTableChannel">
 					<colgroup>
 						<col style="width:8%">
 					</colgroup>
 					<thead>
 					<tr>
-						<th scope="col" rowspan="2">VOC유형</th>
+						<th scope="col" rowspan="2">채널</th>
 						<th scope="col" colspan="2">전체</th>
 						<th scope="col" colspan="3">칭찬</th>
 						<th scope="col" colspan="3">불만</th>
@@ -167,6 +146,25 @@
 						<td></td>
 					</tr>
 					</tbody>
+					<tfoot>
+					<tr>
+						<th>합계</th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+					</tr>
+					</tfoot>
 				</table>
 			</div>
 		</div>

@@ -8,26 +8,26 @@
 >
 
     <head>
-        <title th:text="회사관리"></title>
+        <title th:text="사용자관리"></title>
 
         <!-- 업무용 자바스크립트 (HEAD) 안에 위치 -->
-	    <script th:src="@{/js/system/company_detail.js}"></script>
+	    <script th:src="@{/js/system/user_detail.js}"></script>
 
     </head>
 <body>
 	<div class="page-container">
 	<form name="registForm" id="registForm" method="post" enctype="multipart/form-data">
 		<div class="title-area">
-			<h2>회사관리</h2>
+			<h2>사용자관리</h2>
 			<ul class="location-area">
 				<li class="home" onclick="goMain();"></li>
 				<li>시스템관리</li>
-				<li class="now">회사관리</li>
+				<li class="now">사용자관리</li>
 			</ul>
 		</div>
-		<!-- 기본 정보 영역 -->
+		<!-- 회사 정보 영역 -->
 		<div class="title-area">
-			<h3>기본 정보</h3>
+			<h3>회사 정보</h3>
 			<div class="btn-wrap">
 				<div class="ui button btn-brown btn-go-list"> 목록</div>
 			</div>
@@ -37,48 +37,97 @@
 				<table class="ui celled table">
 					<colgroup>
 						<col style="width:12%;">
-						<col style="width:40%;">
+						<col style="width:auto;">
+					</colgroup>
+					<tbody>
+					<tr>
+						<th scope="row">
+							<label class="required">회사</label>
+						</th>
+						<td>
+							<div class="fields">
+								<div class="four wide field">
+									<div class="ui selection dropdown d-companyCd">
+										<input type="hidden" name="companyCd" id="companyCd">
+										<div class="default text">선택</div>
+										<i class="dropdown icon"></i>
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- //회사 정보 영역 -->
+
+		<!-- 기본 정보 영역 -->
+		<div class="title-area">
+			<h3>기본 정보</h3>
+		</div>
+		<div class="detail-table-area">
+			<div class="ui form">
+				<table class="ui celled table">
+					<colgroup>
+						<col style="width:12%;">
+						<col style="width:32%;">
 						<col style="width:12%;">
 						<col style="width:auto;">
 					</colgroup>
 					<tbody>
 					<tr>
 						<th scope="row">
-							<label class="required">회사코드</label>
+							<label class="required">사용자 ID</label>
 						</th>
-						<td colspan="3">
+						<td>
 							<div class="fields">
-								<div class="three wide field">
-									<input type="hidden" name="companySeq" id="companySeq" value="0">
-									<input type="text" name="companyCd" id="companyCd">
+								<div class="seven wide field">
+									<input type="hidden" name="userSeq" id="userSeq" value="0">
+									<input type="text" name="userId" id="userId">
 								</div>
-								<div class="thirteen wide field">
+								<div class="six wide field">
 									<div class="btn-wrap">
 										<input type="hidden" name="dupChkYn" id="dupChkYn">
-										<div class="ui button btn-black-line btn-check-company">중복확인</div>
+										<div class="ui button btn-black-line btn-check-user">중복확인</div>
 									</div>
+								</div>
+							</div>
+						</td>
+						<th scope="row">
+							<label class="required">사용자명</label>
+						</th>
+						<td>
+							<div class="fields">
+								<div class="five wide field">
+									<input type="text" name="userNm" id="userNm" />
 								</div>
 							</div>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row">
-							<label class="required">회사명(국문)</label>
+							<label class="required">비밀번호</label>
 						</th>
 						<td>
 							<div class="fields">
 								<div class="seven wide field">
-									<input type="text" name="companyNm" id="companyNm" />
+									<input type="password" name="pw" id="pw" class="pwGrp" />
+								</div>
+								<div class="six wide field">
+									<div class="btn-wrap">
+										<div class="ui button btn-black-line btn-open-pw blind">비밀번호변경</div>
+									</div>
 								</div>
 							</div>
 						</td>
 						<th scope="row">
-							<label>회사명(영문)</label>
+							<label class="required">비밀번호확인</label>
 						</th>
 						<td>
 							<div class="fields">
-								<div class="seven wide field">
-									<input type="text" name="companyNmEn" id="companyNmEn" />
+								<div class="five wide field">
+									<input type="password" name="pwChk" id="pwChk" class="pwGrp" />
 								</div>
 							</div>
 						</td>
@@ -88,29 +137,45 @@
 			</div>
 		</div>
 		<!-- //기본 정보 영역 -->
-		<!-- 사용 정보 영역 -->
+		<!-- 사용자 정보 영역 -->
 		<div class="title-area">
-			<h3>사용 정보</h3>
+			<h3>사용자 정보</h3>
 		</div>
 		<div class="detail-table-area">
 			<div class="ui form">
 				<table class="ui celled table">
 					<colgroup>
 						<col style="width:12%;">
-						<col style="width:40%;">
+						<col style="width:32%;">
 						<col style="width:12%;">
 						<col style="width:auto;">
 					</colgroup>
 					<tbody>
 					<tr>
 						<th scope="row">
-							<label>사용여부</label>
+							<label>전화번호</label>
 						</th>
-						<td colspan="3">
+						<td>
 							<div class="fields">
-								<div class="three wide field">
-									<div class="ui selection dropdown d-useYn">
-										<input type="hidden" name="useYn" id="useYn">
+								<div class="sixteen wide field">
+									<input type="hidden" name="telNo" id="telNo">
+									<input type="text" name="telNo1" id="telNo1" style="width:60px" placeholder=""><h1 style="display: inline"> - </h1>
+									<input type="text" name="telNo2" id="telNo2" style="width:80px" placeholder=""><h1 style="display: inline"> - </h1>
+									<input type="text" name="telNo3" id="telNo3" style="width:80px" placeholder="">
+								</div>
+							</div>
+						</td>
+						<th scope="row">
+							<label>이메일</label>
+						</th>
+						<td>
+							<div class="fields">
+								<div class="sixteen wide field">
+									<input type="hidden" name="emailAddr" id="emailAddr" placeholder="이메일">
+									<input type="text" name="emailAddr1" id="emailAddr1" style="width:200px" placeholder=""><h1 style="display: inline">@</h1>
+									<input type="text" name="emailAddr2" id="emailAddr2" style="width:160px" placeholder="">
+									<div class="ui selection dropdown d-emailAddr" style="width:160px">
+										<input type="hidden" name="emailAddr3" id="emailAddr3">
 										<div class="default text">선택</div>
 										<i class="dropdown icon"></i>
 									</div>
@@ -120,82 +185,73 @@
 					</tr>
 					<tr>
 						<th scope="row">
-							<label>사용 시작일</label>
+							<label>부서명</label>
 						</th>
 						<td>
 							<div class="fields">
 								<div class="seven wide field">
-									<div class="calendar-area">
-										<div class="field">
-											<div class="ui calendar">
-												<div class="ui input right icon">
-													<i class="calendar icon"></i>
-													<input type="text" name="useStartDt" id="useStartDt" />
-												</div>
-											</div>
-										</div>
-									</div>
+									<input type="text" name="deptNm" id="deptNm" />
 								</div>
 							</div>
 						</td>
 						<th scope="row">
-							<label>사용 종료일</label>
+							<label>직급명</label>
 						</th>
 						<td>
 							<div class="fields">
-								<div class="seven wide field">
-									<div class="calendar-area">
-										<div class="field">
-											<div class="ui calendar">
-												<div class="ui input right icon">
-													<i class="calendar icon"></i>
-													<input type="text" name="useEndDt" id="useEndDt" />
-												</div>
-											</div>
-										</div>
-									</div>
+								<div class="five wide field">
+									<input type="text" name="titleNm" id="titleNm" />
 								</div>
 							</div>
 						</td>
 					</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<!-- //사용 정보 영역 -->
-		<!-- 부가 정보 영역 -->
-		<div class="title-area">
-			<h3>부가 정보</h3>
-		</div>
-		<div class="detail-table-area">
-			<div class="ui form">
-				<table class="ui celled table">
-					<colgroup>
-						<col style="width:12%;">
-						<col style="width:auto;">
-					</colgroup>
-					<tbody>
 					<tr>
 						<th scope="row">
-							<label class="required">회사 로고</label>
+							<label>입사일</label>
 						</th>
 						<td>
-							<!-- [dev]_ 단일 이미지 업로드의 경우, 기존 파일 첨부와 다른 디자인이다. 파일첨부 기능 필요. -->
 							<div class="fields">
-								<div class="six wide field">
-									<input type="file" name="logoFile" id="logoFile">
-									<input type="text" class="blind" name="companyLogoPath" id="companyLogoPath" readonly>
-								</div>
-								<div class="two wide field">
-									<div class="btn-wrap">
-										<div class="ui button btn-black-line btn-cancel-file">
-											취소
+								<div class="seven wide field">
+									<div class="calendar-area">
+										<div class="field">
+											<div class="ui calendar">
+												<div class="ui input right icon">
+													<i class="calendar icon"></i>
+													<input type="text" name="joinDt" id="joinDt" placeholder="YYYY-MM-DD"/>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
-								<div>
-									<input type="hidden" name="companyLogoFileNm" id="companyLogoFileNm">
-									<a id="companyLogoFile" style="font-size: 18px;font-weight: bold;"></a>
+							</div>
+						</td>
+						<th scope="row">
+							<label class="required">재직여부</label>
+						</th>
+						<td>
+							<div class="fields">
+								<div class="five wide field">
+									<div class="ui selection dropdown d-employmentYn">
+										<input type="hidden" name="employmentYn" id="employmentYn">
+										<div class="default text">선택</div>
+										<i class="dropdown icon"></i>
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">
+							<label>권한</label>
+						</th>
+						<td colspan="3">
+							<div class="fields">
+								<div class="thirteen wide field">
+									<div class="ui multiple selection dropdown d-userAuthCodes" style="font-size:1.5em">
+										<input type="hidden" name="userAuthCodes" id="userAuthCodes">
+										<div class="default text">선택</div>
+										<i class="dropdown icon"></i>
+									</div>
 								</div>
 							</div>
 						</td>
@@ -204,19 +260,66 @@
 				</table>
 			</div>
 		</div>
-		<!-- //부가 정보 영역 -->
+		<!-- //사용자 정보 영역 -->
 
 		<!-- 상세 테이블 하단 버튼 영역 -->
 		<!-- [dev]_ 버튼이 우측에만 올 경우, "justify-right" 클래스 추가 / 좌측은 클래스 없음 -->
 		<div class="btn-area tbl-bottom justify-right">
 			<div class="btn-wrap"></div>
 			<div class="btn-wrap">
-				<div class="ui button btn-darkgray btn-save-company">저장</div>
-				<div class="ui button btn-darkgray btn-delt-company blind">삭제</div>
+				<div class="ui button btn-darkgray btn-save-user">저장</div>
+				<div class="ui button btn-darkgray btn-delt-user blind">삭제</div>
 			</div>
 		</div>
 		<!-- //상세 테이블 하단 버튼 영역 -->
 	</form>
+	</div>
+
+	<!-- 비밀번호변경 모달창 -->
+	<div class="ui modal modal-pw" style="width:900px; height:100px;">
+		<i class="close icon"></i>
+		<div class="header">비밀번호변경</div>
+		<div class="content">
+			<div class="detail-table-area">
+				<div class="ui form">
+					<form id="pwUpdateForm">
+					<table class="ui celled table">
+						<colgroup>
+							<col style="width:20%;">
+							<col style="width:30%;">
+							<col style="width:20%;">
+							<col style="width:auto;">
+						</colgroup>
+						<tbody>
+						<tr>
+							<th scope="row">
+								<label class="required">비밀번호</label>
+							</th>
+							<td>
+								<div class="thirteen wide field">
+									<input type="password" name="pwChg" id="pwChg" />
+								</div>
+							</td>
+							<th scope="row">
+								<label class="required">비밀번호확인</label>
+							</th>
+							<td>
+								<div class="fields">
+									<div class="thirteen wide field">
+										<input type="password" name="pwChgChk" id="pwChgChk" />
+									</div>
+								</div>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="actions">
+			<button class="ui button btn-darkgray btn-update-pw">변경</button>
+		</div>
 	</div>
 </body>
 </html>

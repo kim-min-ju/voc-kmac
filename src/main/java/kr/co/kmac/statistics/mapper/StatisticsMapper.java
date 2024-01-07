@@ -1,44 +1,56 @@
-package kr.co.kmac.voc.mapper;
+package kr.co.kmac.statistics.mapper;
 
-import kr.co.kmac.voc.dto.VocHistDto;
+import kr.co.kmac.statistics.dto.StatisticsDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
- * VOC이력 MyBatis Mapper 클래스
+ * VOC현황 MyBatis Mapper 클래스
  * 
- * @ClassName VocHistMapper.java
- * @Description VOC이력 Mapper 클래스
+ * @ClassName StatisticsMapper.java
+ * @Description VOC현황 Mapper 클래스
  * @author mjkim
  * @since 2023. 9. 18.
  *
  */
 @Repository
 @Mapper
-public interface VocHistMapper
+public interface StatisticsMapper
 {
     /**
-     * VOC이력 목록 조회
+     * 기간별 VOC 현황 조회
      *
-     * @param vocSeq VOC이력 검색 조건 포함 객체
+     * @param param 검색 조건 포함 객체
      */
-    List<VocHistDto.Info> getVocHistList(int vocSeq);
+    List<StatisticsDto.Info> getVocStatusByPeriod(StatisticsDto.Request param);
 
     /**
-     * VOC이력 상세 조회
-     * 
-     * @param histSeq VOC이력 pk
-     * @return VOC이력 객체
+     * 유형별 VOC 현황 조회
+     *
+     * @param param 검색 조건 포함 객체
      */
-    VocHistDto.Info getVocHist(int histSeq);
+    List<StatisticsDto.Info> getVocStatusByVoctype(StatisticsDto.Request param);
 
     /**
-     * VOC이력 입력(insert)
-     * 
-     * @param param 저장 할 VOC이력 객체
-     * @return 적용된 행 수
+     * 접수채널별 VOC 현황 조회
+     *
+     * @param param 검색 조건 포함 객체
      */
-    int insertVocHist(VocHistDto.Info param);
+    List<StatisticsDto.Info> getVocStatusByChannel(StatisticsDto.Request param);
+
+    /**
+     * 처리유형별 VOC 현황 조회
+     *
+     * @param param 검색 조건 포함 객체
+     */
+    List<StatisticsDto.Info> getVocStatusByActtype(StatisticsDto.Request param);
+
+    /**
+     * 처리기간별 VOC 현황 조회
+     *
+     * @param param 검색 조건 포함 객체
+     */
+    List<StatisticsDto.Info> getVocStatusByActperiod(StatisticsDto.Request param);
 }

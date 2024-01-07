@@ -15,12 +15,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
  *
  */
 @Controller
-@RequestMapping("/voc/voclist")
-public class VocMstViewController {
+@RequestMapping("/voc")
+public class VocCustViewController {
 
-    // 화면 오픈
-    @GetMapping
+    // 고객목록화면 오픈
+    @GetMapping("/custlist")
     public String view(Model model) {
-        return "pages/voc/voc_list";
+        return "pages/voc/cust_list";
+    }
+
+    // 고객상세화면 오픈
+    @GetMapping("/custdetail")
+    public String viewDetail(Model model) {
+        return "pages/voc/cust_detail";
     }
 }

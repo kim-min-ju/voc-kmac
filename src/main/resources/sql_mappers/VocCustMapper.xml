@@ -3,65 +3,69 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="kr.co.rmsoft.bms.voc.mapper.VocCustMapper">
+<mapper namespace="kr.co.kmac.voc.mapper.VocCustMapper">
 
     <!-- 고객정보 목록 조회 -->
-    <select id="getVocCustList" resultType="voc.voccust">
-        SELECT cust_seq             AS "custSeq",
-               hotel_cd             AS "hotelCd",
-               cust_no              AS "custNo",
-               cust_nm              AS "custNm",
-               cust_nm_en           AS "custNmEn",
-               tel_no               AS "telNo",
-               email_addr           AS "emailAddr",
-               del_yn               AS "delYn",
-               reg_user_no          AS "regUserNo",
-               reg_dt               AS "regDt",
-               mod_user_no          AS "modUserNo",
-               mod_dt               AS "modDt"
-          FROM tb_voc_cust
-         <where>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.custSeq)">AND cust_seq = #{p.custSeq} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.hotelCd)">AND hotel_cd = #{p.hotelCd} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.custNo)">AND cust_no = #{p.custNo} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.custNm)">AND cust_nm = #{p.custNm} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.custNmEn)">AND cust_nm_en = #{p.custNmEn} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.telNo)">AND tel_no = #{p.telNo} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.emailAddr)">AND email_addr = #{p.emailAddr} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.delYn)">AND del_yn = #{p.delYn} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.regUserNo)">AND reg_user_no = #{p.regUserNo} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.regDt)">AND reg_dt = #{p.regDt} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.modUserNo)">AND mod_user_no = #{p.modUserNo} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.modDt)">AND mod_dt = #{p.modDt} </if>
-         </where>
-         ORDER BY lsupd_dt DESC
+    <select id="getVocCustList" resultType="kr.co.kmac.voc.dto.VocCustDto$Info">
+        SELECT A.cust_seq             AS "custSeq",
+               A.company_cd           AS "companyCd",
+               (SELECT company_nm FROM tb_company WHERE company_cd=A.company_cd) AS "companyNm",
+               A.cust_no              AS "custNo",
+               A.cust_nm              AS "custNm",
+               A.cust_nm_en           AS "custNmEn",
+               A.tel_no               AS "telNo",
+               A.email_addr           AS "emailAddr",
+               A.del_yn               AS "delYn",
+               A.reg_user_no          AS "regUserNo",
+               fn_getUserNm(A.reg_user_no) AS "regUserNm",
+               date_format(A.reg_dt, '%Y-%m-%d %H:%i:%s') AS "regDt",
+               A.mod_user_no          AS "modUserNo",
+               fn_getUserNm(A.mod_user_no) AS "modUserNm",
+               date_format(A.mod_dt, '%Y-%m-%d %H:%i:%s') AS "modDt",
+               (SELECT COUNT(1) FROM tb_voc_mst WHERE cust_seq = A.cust_seq AND del_yn = 'N') AS "vocCnt",
+               (SELECT COUNT(1) FROM tb_voc_mst WHERE cust_seq = A.cust_seq AND sens_spec_yn = 'Y' AND del_yn = 'N') AS "sensVocCnt"
+          FROM tb_voc_cust A
+         WHERE A.del_yn = 'N'
+            <if test="@org.apache.commons.lang3.ObjectUtils@isEmpty(anonymCustYn)">AND A.cust_no != CONCAT(A.company_cd,'_99999') </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(custSeq) and custSeq!=0">AND A.acust_seq = #{custSeq} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(companyCd)">AND A.company_cd = #{companyCd} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(custNo)">AND A.cust_no = #{custNo} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(custNm)">AND A.cust_nm LIKE CONCAT('%',#{custNm},'%') </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(custNmEn)">AND A.cust_nm_en LIKE CONCAT('%',#{custNmEn},'%') </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(telNo)">AND A.tel_no = #{telNo} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(regDtStart)">AND A.reg_dt &gt;= #{regDtStart} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(regDtEnd)">AND A.reg_dt &lt; ADDDATE(#{regDtEnd},1) </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(vocCnt) and vocCnt>0">
+                AND (SELECT COUNT(1) FROM tb_voc_mst WHERE cust_seq = A.cust_seq AND del_yn = 'N') >= #{vocCnt}
+            </if>
+         ORDER BY A.cust_seq DESC
          <if test="offset &gt; -1">
          LIMIT #{offset}, #{length}
          </if>
     </select>
     <select id="getVocCustListCount" resultType="long">
         SELECT COUNT(1)
-          FROM tb_voc_cust
-        <where>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(custSeq)">AND cust_seq = #{custSeq} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(hotelCd)">AND hotel_cd = #{hotelCd} </if>
+          FROM tb_voc_cust A
+         WHERE A.del_yn = 'N'
+            <if test="@org.apache.commons.lang3.ObjectUtils@isEmpty(anonymCustYn)">AND A.cust_no != CONCAT(A.company_cd,'_99999') </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(custSeq) and custSeq!=0">AND cust_seq = #{custSeq} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(companyCd)">AND company_cd = #{companyCd} </if>
             <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(custNo)">AND cust_no = #{custNo} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(custNm)">AND cust_nm = #{custNm} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(custNmEn)">AND cust_nm_en = #{custNmEn} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(custNm)">AND cust_nm LIKE CONCAT('%',#{custNm},'%') </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(custNmEn)">AND cust_nm_en LIKE CONCAT('%',#{custNmEn},'%') </if>
             <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(telNo)">AND tel_no = #{telNo} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(emailAddr)">AND email_addr = #{emailAddr} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(delYn)">AND del_yn = #{delYn} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(regUserNo)">AND reg_user_no = #{regUserNo} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(regDt)">AND reg_dt = #{regDt} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(modUserNo)">AND mod_user_no = #{modUserNo} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(modDt)">AND mod_dt = #{modDt} </if>
-        </where>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(regDtStart)">AND A.reg_dt &gt;= #{regDtStart} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(regDtEnd)">AND A.reg_dt &lt; ADDDATE(#{regDtEnd},1) </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(vocCnt) and vocCnt>0">
+                AND (SELECT COUNT(1) FROM tb_voc_mst WHERE cust_seq = A.cust_seq AND del_yn = 'N') >= #{vocCnt}
+            </if>
     </select>
 
 	<!-- 고객정보 상세 조회 -->
-    <select id="getVocCust" resultType="voc.voccust">
+    <select id="getVocCust" resultType="kr.co.kmac.voc.dto.VocCustDto$Info">
         SELECT cust_seq             AS "custSeq",
-               hotel_cd             AS "hotelCd",
+               company_cd           AS "companyCd",
+               (SELECT company_nm FROM tb_company WHERE company_cd=A.company_cd) AS "companyNm",
                cust_no              AS "custNo",
                cust_nm              AS "custNm",
                cust_nm_en           AS "custNmEn",
@@ -69,89 +73,70 @@
                email_addr           AS "emailAddr",
                del_yn               AS "delYn",
                reg_user_no          AS "regUserNo",
-               reg_dt               AS "regDt",
+               fn_getUserNm(reg_user_no) AS "regUserNm",
+               date_format(reg_dt, '%Y-%m-%d %H:%i:%s') AS "regDt",
                mod_user_no          AS "modUserNo",
-               mod_dt               AS "modDt"
+               fn_getUserNm(mod_user_no) AS "modUserNm",
+               date_format(mod_dt, '%Y-%m-%d %H:%i:%s') AS "modDt",
+               (SELECT COUNT(1) FROM tb_voc_mst WHERE cust_seq = A.cust_seq AND del_yn = 'N') AS "vocCnt",
+               (SELECT COUNT(1) FROM tb_voc_mst WHERE cust_seq = A.cust_seq AND sens_spec_yn = 'Y' AND del_yn = 'N') AS "sensVocCnt"
           FROM tb_voc_cust A
-         <where>
-           cust_seq = #{custSeq}
-         </where>
+         WHERE cust_seq = #{custSeq}
+           AND del_yn = 'N'
     </select>
 
 	<!-- 고객정보 등록 -->
-    <insert id="mergeVocCust">
-        MERGE INTO tb_voc_cust TGT
-        USING
+    <insert id="insertVocCust">
+        INSERT INTO tb_voc_cust
         (
-            SELECT
-                #{custSeq} AS "cust_seq",
-                #{hotelCd} AS "hotel_cd",
-                #{custNo} AS "cust_no",
-                #{custNm} AS "cust_nm",
-                #{custNmEn} AS "cust_nm_en",
-                #{telNo} AS "tel_no",
-                #{emailAddr} AS "email_addr",
-                #{delYn} AS "del_yn",
-                #{regUserNo} AS "reg_user_no",
-                #{regDt} AS "reg_dt",
-                #{modUserNo} AS "mod_user_no",
-                #{modDt} AS "mod_dt"
-            FROM db_root
-        ) SRC
-        ON src.cust_seq = tgt.cust_seq
-        WHEN MATCHED THEN
-            UPDATE SET
-                hotel_cd             = src.hotel_cd,
-                cust_no              = src.cust_no,
-                cust_nm              = src.cust_nm,
-                cust_nm_en           = src.cust_nm_en,
-                tel_no               = src.tel_no,
-                email_addr           = src.email_addr,
-                del_yn               = src.del_yn,
-                reg_user_no          = src.reg_user_no,
-                reg_dt               = src.reg_dt,
-                mod_user_no          = src.mod_user_no,
-                mod_dt               = src.mod_dt
-        WHEN NOT MATCHED THEN
-            INSERT
-            (
-                cust_seq,
-                hotel_cd,
-                cust_no,
-                cust_nm,
-                cust_nm_en,
-                tel_no,
-                email_addr,
-                del_yn,
-                reg_user_no,
-                reg_dt,
-                mod_user_no,
-                mod_dt
-            )
-            VALUES
-            (
-                src.cust_seq,
-                src.hotel_cd,
-                src.cust_no,
-                src.cust_nm,
-                src.cust_nm_en,
-                src.tel_no,
-                src.email_addr,
-                src.del_yn,
-                src.reg_user_no,
-                src.reg_dt,
-                src.mod_user_no,
-                src.mod_dt
-            )
+            company_cd,
+            cust_no,
+            cust_nm,
+            cust_nm_en,
+            tel_no,
+            email_addr,
+            reg_user_no,
+            mod_user_no
+        )
+        VALUES
+        (
+            #{companyCd},
+        <choose>
+            <when test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(custNo)"> #{custNo}, </when>
+            <otherwise> (SELECT * FROM ( SELECT CONCAT(#{companyCd}, '_', LPAD(IFNULL(CAST(SUBSTRING_INDEX(max(cust_no), '_', -1) AS INTEGER) + 1, 1), 5, '0'))
+                                           FROM tb_voc_cust WHERE company_cd=#{companyCd} and cust_no != CONCAT(company_cd,'_','99999') ) AS cust_no),
+            </otherwise>
+        </choose>
+            #{custNm},
+            #{custNmEn},
+            #{telNo},
+            #{emailAddr},
+            #{regUserNo},
+            #{modUserNo}
+         )
+        <selectKey resultType="int" keyProperty="returnKey" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
     </insert>
+
+    <!-- 고객정보 수정 -->
+    <update id="updateVocCust">
+        UPDATE tb_voc_cust SET
+            company_cd           = #{companyCd},
+            cust_no              = (SELECT * FROM ( SELECT CONCAT(#{companyCd}, '_', LPAD(IFNULL(COUNT(1), 0) + 1, 5, '0')) FROM tb_voc_cust WHERE company_cd=#{companyCd} ) AS cust_no),
+            cust_nm              = #{custNm},
+            cust_nm_en           = #{custNmEn},
+            tel_no               = #{telNo},
+            email_addr           = #{emailAddr},
+            mod_user_no          = #{modUserNo}
+        WHERE cust_seq=#{custSeq}
+    </update>
 
 	<!-- 고객정보 삭제 -->
     <update id="deleteVocCust">
         UPDATE tb_voc_cust
-           SET use_at = 'N'
-         <where>
-             cust_seq=#{custSeq}
-         </where>
+           SET del_yn = 'Y'
+         WHERE cust_seq=#{custSeq}
     </update>
 
 </mapper>

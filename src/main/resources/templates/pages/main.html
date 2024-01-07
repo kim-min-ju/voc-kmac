@@ -3,173 +3,134 @@
 <html lang="en"
 	  xmlns:th="http://www.thymeleaf.org"
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate="~{layout/layout}"
+	  layout:decorate="~{layout/main}"
 	  layout:fragment="Content"
 >
 
     <head>
-        <title th:text="권한관리"></title>
-
-        <!-- 업무용 자바스크립트 (HEAD) 안에 위치 -->
-	    <script th:src="@{/js/system/auth.js}"></script>
-
+        <title th:text="메인화면"></title>
+		<script th:src="@{/js/main.js}"></script>
     </head>
-<body>
-<div class="page-container">
-	<div class="title-area">
-		<h2>권한관리</h2>
-		<ul class="location-area">
-			<li class="home"></li>
-			<li>시스템관리</li>
-			<li class="now">권한관리</li>
-		</ul>
-	</div>
-	<div class="search-area">
-		<div class="search-inner">
-			<div class="ui form">
-				<div class="fields">
-					<div class="four wide field">
-						<label>회사코드</label>
-						<div class="ui selection dropdown">
-							<input type="hidden" name="search[type]">
-							<div class="default text">회사코드를 선택하세요.</div>
-							<i class="dropdown icon"></i>
-							<div class="menu">
-								<div class="item" data-value="">KMSC</div>
+	<body>
+		<div class="page-container">
+			<!-- 검색 영역 -->
+			<div class="search-area">
+				<h2 class="blind">VOC 검색</h2>
+				<div class="search-inner">
+					<div class="ui form">
+						<div class="fields">
+							<div class="four wide field">
+								<div class="ui selection dropdown d-year">
+									<input type="hidden" name="year" id="year">
+									<div class="default text">선택</div>
+									<i class="dropdown icon"></i>
+								</div>
 							</div>
-						</div>
-					</div>
-					<div class="four wide field">
-						<label>권한명</label>
-						<input type="text" placeholder="권한명을 입력하세요." >
-					</div>
-					<div class="four wide field">
-						<label>사용여부</label>
-						<div class="ui selection dropdown">
-							<input type="hidden" name="search[type]">
-							<div class="default text">사용여부를 선택하세요.</div>
-							<i class="dropdown icon"></i>
-							<div class="menu">
-								<div class="item" data-value="Y">Y</div>
-								<div class="item" data-value="N">N</div>
+							<div class="field">
+								<span class="unit">년</span>
 							</div>
-						</div>
-					</div>
-					<!-- [dev] 검색영역 내 조회 버튼은 "two wide field btn-search" 클래스 사용 -->
-					<div class="two wide field btn-search">
-						<div class="ui button">
-							<i class="search icon"></i>
-							조회
+							<div class="four wide field">
+								<div class="ui selection dropdown d-month">
+									<input type="hidden" name="month" id="month">
+									<div class="default text">선택</div>
+									<i class="dropdown icon"></i>
+								</div>
+							</div>
+							<div class="field">
+								<span class="unit">월</span>
+							</div>
+							<div class="four wide field">
+								<div class="ui selection dropdown d-day">
+									<input type="hidden" name="day" id="day">
+									<div class="default text">선택</div>
+									<i class="dropdown icon"></i>
+								</div>
+							</div>
+							<div class="field">
+								<span class="unit">일</span>
+							</div>
+							<!-- [dev] 검색영역 내 조회 버튼은 "two wide field btn-search" 클래스 사용 -->
+							<div class="two wide field btn-search">
+								<div class="ui button">
+									<i class="search icon"></i>
+									조회
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	</div>
-	<div class="btn-area tbl-top">
-		<div class="btn-wrap"></div>
+			<!-- // 검색 영역 -->
 
-		<div class="btn-wrap">
-			<div class="ui button btn-darkgray btn-add">추가</div>
-			<div class="ui button btn-darkgray btn-dtl">상세</div>
-		</div>
-	</div>
+			<!-- VOC 종류별 건수 확인 영역 -->
+			<div class="voc-check-area">
+				<h2 class="blind">VOC 종류별 건수 확인</h2>
+				<ul class="voc-check-area">
+					<li class="voc-complain">
+						<i class="icon"></i>
+						<dl class="voc-count">
+							<dt>불만</dt>
+							<dd>
+								<strong class="num" id="complaintCnt"></strong>
+								<span class="unit">건</span>
+							</dd>
+						</dl>
+					</li>
+					<li class="voc-compliment">
+						<i class="icon"></i>
+						<dl class="voc-count">
+							<dt>칭찬</dt>
+							<dd>
+								<strong class="num" id="complimentCnt"></strong>
+								<span class="unit">건</span>
+							</dd>
+						</dl>
+					</li>
+					<li class="voc-suggestion">
+						<i class="icon"></i>
+						<dl class="voc-count">
+							<dt>제안</dt>
+							<dd>
+								<strong class="num" id="suggestionCnt"></strong>
+								<span class="unit">건</span>
+							</dd>
+						</dl>
+					</li>
+					<li class="voc-inquiry">
+						<i class="icon"></i>
+						<dl class="voc-count">
+							<dt>문의</dt>
+							<dd>
+								<strong class="num" id="inquiryCnt"></strong>
+								<span class="unit">건</span>
+							</dd>
+						</dl>
+					</li>
+				</ul>
+			</div>
+			<!-- // VOC 종류별 건 수 확인 영역 -->
 
-	<div class="table-area">
-		<div class="ui form">
-			<table id="listDataTable" class="display stripe hover">
-				<colgroup>
-					<col style="width:5%">
-					<col style="width:8%">
-					<col style="width:8%">
-					<col style="width:8%">
-					<col style="width:8%">
-					<col style="width:8%">
-					<col style="width:8%">
-					<col style="width:8%">
-					<col style="width:8%">
-					<col style="width:8%">
-				</colgroup>
-				<thead>
-				<tr>
-					<th>선택</th>
-					<th>회사명</th>
-					<th>권한코드</th>
-					<th>권한명</th>
-					<th>권한설명</th>
-					<th>사용여부</th>
-					<th>등록자</th>
-					<th>등록일시</th>
-					<th>수정자</th>
-					<th>수정일시</th>
-				</tr>
-				</thead>
-				<tbody>
-				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
-				</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
-</div>
-
-<!-- 상세모달창 -->
-<div class="ui modal modal-auth">
-	<i class="close icon"></i>
-	<div class="header">권한관리</div>
-	<div class="content">
-		<div class="search-area">
-			<div class="search-inner">
-				<div class="ui form">
-					<form id="registForm" method="post">
-					<div class="fields">
-						<div class="seven wide field">
-							<input type="hidden" name="authSeq" id="authSeq">
-							<label>회사코드</label>
-							<input type="hidden" name="companyCd" value="TEST01">
-							<div class="default text">회사코드를 선택하세요.</div>
-							<i class="dropdown icon"></i>
-							<div class="menu">
-								<div class="item" data-value="">KMSC</div>
-							</div>
-						</div>
-						<div class="seven wide field">
-							<label>권한코드</label>
-							<input type="text" name="authCd" >
-						</div>
-						<div class="seven wide field">
-							<label>권한명</label>
-							<input type="text" name="authNm" >
-						</div>
+			<div class="flex-layout justify-sb align-top">
+				<!-- VOC 평균 처리기한 영역 -->
+				<div class="voc-period-area">
+					<h2>VOC 평균 처리기한</h2>
+					<div class="p-period">
+						<strong class="num" id="actPeriodAvg"></strong>
+						<span class="unit">일</span>
 					</div>
-					<div class="fields">
-						<div class="seven wide field">
-							<label>권한설명</label>
-							<input type="text" name="authDesc" placeholder="권한설명을 입력하세요." >
-						</div>
-						<div class="btn-search">
-							<div class="ui button btn-save">저장</div>
-						</div>
-						<div class="btn-search">
-							<div class="ui button btn-delt blind">삭제</div>
-						</div>
-					</div>
-					</form>
 				</div>
+				<!-- // VOC 평균 처리기한 영역 -->
+
+				<!-- 공지사항 -->
+				<div class="notice-area">
+					<div class="flex-layout justify-sb">
+						<h2>공지사항</h2>
+						<a href="javascript:;" class="btn-more">MORE</a>
+					</div>
+					<ul id="noticeList"></ul>
+				</div>
+				<!-- // 공지사항 -->
 			</div>
 		</div>
-	</div>
-</div>
-
-</body>
+	</body>
 </html>

@@ -3,256 +3,176 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="kr.co.voc.vocapi.system.mapper.SysUserMapper">
+<mapper namespace="kr.co.kmac.system.mapper.UserMapper">
 
     <!-- 사용자정보 목록 조회 -->
-    <select id="getSysUserList" resultType="system.sysuser">
-        SELECT user_seq             AS "userSeq",
-               hotel_cd             AS "hotelCd",
-               user_id              AS "userId",
-               emp_type_cd          AS "empTypeCd",
-               emp_no               AS "empNo",
-               user_nm              AS "userNm",
-               user_nm_en           AS "userNmEn",
-               company_cd           AS "companyCd",
-               company_nm           AS "companyNm",
-               dept_cd              AS "deptCd",
-               dept_nm              AS "deptNm",
-               real_dept_cd         AS "realDeptCd",
-               real_dept_nm         AS "realDeptNm",
-               duty_cd              AS "dutyCd",
-               duty_nm              AS "dutyNm",
-               position_cd          AS "positionCd",
-               position_nm          AS "positionNm",
-               title_cd             AS "titleCd",
-               title_nm             AS "titleNm",
-               retire_yn            AS "retireYn",
-               join_dt              AS "joinDt",
-               retire_dt            AS "retireDt",
-               tel_no               AS "telNo",
-               cell_no              AS "cellNo",
-               email_addr           AS "emailAddr",
-               pw                   AS "pw",
-               pw_chg_dt            AS "pwChgDt",
-               account_lock_yn      AS "accountLockYn",
-               etc1                 AS "etc1",
-               etc2                 AS "etc2",
-               etc3                 AS "etc3",
-               use_yn               AS "useYn",
-               reg_user_no          AS "regUserNo",
-               reg_dt               AS "regDt",
-               mod_user_no          AS "modUserNo",
-               mod_dt               AS "modDt"
-          FROM tb_sys_user
-         <where>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.userSeq)">AND user_seq = #{p.userSeq} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.hotelCd)">AND hotel_cd = #{p.hotelCd} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.userId)">AND user_id = #{p.userId} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.empTypeCd)">AND emp_type_cd = #{p.empTypeCd} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.empNo)">AND emp_no = #{p.empNo} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.userNm)">AND user_nm = #{p.userNm} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.userNmEn)">AND user_nm_en = #{p.userNmEn} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.companyCd)">AND company_cd = #{p.companyCd} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.companyNm)">AND company_nm = #{p.companyNm} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.deptCd)">AND dept_cd = #{p.deptCd} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.deptNm)">AND dept_nm = #{p.deptNm} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.realDeptCd)">AND real_dept_cd = #{p.realDeptCd} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.realDeptNm)">AND real_dept_nm = #{p.realDeptNm} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.dutyCd)">AND duty_cd = #{p.dutyCd} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.dutyNm)">AND duty_nm = #{p.dutyNm} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.positionCd)">AND position_cd = #{p.positionCd} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.positionNm)">AND position_nm = #{p.positionNm} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.titleCd)">AND title_cd = #{p.titleCd} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.titleNm)">AND title_nm = #{p.titleNm} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.retireYn)">AND retire_yn = #{p.retireYn} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.joinDt)">AND join_dt = #{p.joinDt} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.retireDt)">AND retire_dt = #{p.retireDt} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.telNo)">AND tel_no = #{p.telNo} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.cellNo)">AND cell_no = #{p.cellNo} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.emailAddr)">AND email_addr = #{p.emailAddr} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.pw)">AND pw = #{p.pw} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.pwChgDt)">AND pw_chg_dt = #{p.pwChgDt} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.accountLockYn)">AND account_lock_yn = #{p.accountLockYn} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.etc1)">AND etc1 = #{p.etc1} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.etc2)">AND etc2 = #{p.etc2} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.etc3)">AND etc3 = #{p.etc3} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.useYn)">AND use_yn = #{p.useYn} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.regUserNo)">AND reg_user_no = #{p.regUserNo} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.regDt)">AND reg_dt = #{p.regDt} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.modUserNo)">AND mod_user_no = #{p.modUserNo} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(p.modDt)">AND mod_dt = #{p.modDt} </if>
-         </where>
-         ORDER BY lsupd_dt DESC
+    <select id="getUserList" resultType="kr.co.kmac.system.dto.UserDto$Info">
+        SELECT A.user_seq             AS "userSeq",
+               A.company_cd           AS "companyCd",
+               (SELECT company_nm FROM tb_company WHERE company_cd=A.company_cd) AS "companyNm",
+               A.user_id              AS "userId",
+               A.user_nm              AS "userNm",
+               A.dept_cd              AS "deptCd",
+               A.dept_nm              AS "deptNm",
+               A.title_cd             AS "titleCd",
+               A.title_nm             AS "titleNm",
+               A.join_dt              AS "joinDt",
+               A.employment_yn        AS "employmentYn",
+               A.tel_no               AS "telNo",
+               A.cell_no              AS "cellNo",
+               A.email_addr           AS "emailAddr",
+               A.pw                   AS "pw",
+               A.pw_chg_dt            AS "pwChgDt",
+               A.account_lock_yn      AS "accountLockYn",
+               A.use_yn               AS "useYn",
+               A.reg_user_no          AS "regUserNo",
+               fn_getUserNm(A.reg_user_no) AS "regUserNm",
+               date_format(A.reg_dt, '%Y-%m-%d %H:%i:%s') AS "regDt",
+               A.mod_user_no          AS "modUserNo",
+               fn_getUserNm(A.mod_user_no) AS "modUserNm",
+               date_format(A.mod_dt, '%Y-%m-%d %H:%i:%s') AS "modDt"
+          FROM tb_sys_user A
+         WHERE A.use_yn = 'Y'
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(companyCd)">AND A.company_cd = #{companyCd} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(userId)">AND A.user_id LIKE CONCAT('%',#{userId},'%') </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(userIdForCheck)">AND A.user_id = #{userIdForCheck} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(userNm)">AND A.user_nm LIKE CONCAT('%',#{userNm},'%') </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(telNo)">AND A.tel_no LIKE CONCAT('%',#{telNo},'%') </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(emailAddr)">AND A.email_addr LIKE CONCAT('%',#{emailAddr},'%') </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(employmentYn)">AND A.employment_yn = #{employmentYn} </if>
+         ORDER BY A.user_seq DESC
          <if test="offset &gt; -1">
          LIMIT #{offset}, #{length}
          </if>
     </select>
-    <select id="getSysUserListCount" resultType="long">
+    <select id="getUserListCount" resultType="long">
         SELECT COUNT(1)
           FROM tb_sys_user
-        <where>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(userSeq)">AND user_seq = #{userSeq} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(hotelCd)">AND hotel_cd = #{hotelCd} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(userId)">AND user_id = #{userId} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(empTypeCd)">AND emp_type_cd = #{empTypeCd} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(empNo)">AND emp_no = #{empNo} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(userNm)">AND user_nm = #{userNm} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(userNmEn)">AND user_nm_en = #{userNmEn} </if>
+         WHERE use_yn = 'Y'
             <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(companyCd)">AND company_cd = #{companyCd} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(companyNm)">AND company_nm = #{companyNm} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(deptCd)">AND dept_cd = #{deptCd} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(deptNm)">AND dept_nm = #{deptNm} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(realDeptCd)">AND real_dept_cd = #{realDeptCd} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(realDeptNm)">AND real_dept_nm = #{realDeptNm} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(dutyCd)">AND duty_cd = #{dutyCd} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(dutyNm)">AND duty_nm = #{dutyNm} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(positionCd)">AND position_cd = #{positionCd} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(positionNm)">AND position_nm = #{positionNm} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(titleCd)">AND title_cd = #{titleCd} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(titleNm)">AND title_nm = #{titleNm} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(retireYn)">AND retire_yn = #{retireYn} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(joinDt)">AND join_dt = #{joinDt} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(retireDt)">AND retire_dt = #{retireDt} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(telNo)">AND tel_no = #{telNo} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(cellNo)">AND cell_no = #{cellNo} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(emailAddr)">AND email_addr = #{emailAddr} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(pw)">AND pw = #{pw} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(pwChgDt)">AND pw_chg_dt = #{pwChgDt} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(accountLockYn)">AND account_lock_yn = #{accountLockYn} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(etc1)">AND etc1 = #{etc1} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(etc2)">AND etc2 = #{etc2} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(etc3)">AND etc3 = #{etc3} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(useYn)">AND use_yn = #{useYn} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(regUserNo)">AND reg_user_no = #{regUserNo} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(regDt)">AND reg_dt = #{regDt} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(modUserNo)">AND mod_user_no = #{modUserNo} </if>
-            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(modDt)">AND mod_dt = #{modDt} </if>
-        </where>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(userId)">AND user_id LIKE CONCAT('%',#{userId},'%') </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(userIdForCheck)">AND user_id = #{userIdForCheck} </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(userNm)">AND user_nm LIKE CONCAT('%',#{userNm},'%') </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(telNo)">AND tel_no LIKE CONCAT('%',#{telNo},'%') </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(emailAddr)">AND email_addr LIKE CONCAT('%',#{emailAddr},'%') </if>
+            <if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(employmentYn)">AND employment_yn = #{employmentYn} </if>
     </select>
 
 	<!-- 사용자정보 상세 조회 -->
-    <select id="getSysUser" resultType="system.sysuser">
+    <select id="getUser" resultType="kr.co.kmac.system.dto.UserDto$Info">
         SELECT user_seq             AS "userSeq",
-               hotel_cd             AS "hotelCd",
-               user_id              AS "userId",
-               emp_type_cd          AS "empTypeCd",
-               emp_no               AS "empNo",
-               user_nm              AS "userNm",
-               user_nm_en           AS "userNmEn",
                company_cd           AS "companyCd",
-               company_nm           AS "companyNm",
+               user_id              AS "userId",
+               user_nm              AS "userNm",
                dept_cd              AS "deptCd",
                dept_nm              AS "deptNm",
-               real_dept_cd         AS "realDeptCd",
-               real_dept_nm         AS "realDeptNm",
-               duty_cd              AS "dutyCd",
-               duty_nm              AS "dutyNm",
-               position_cd          AS "positionCd",
-               position_nm          AS "positionNm",
                title_cd             AS "titleCd",
                title_nm             AS "titleNm",
-               retire_yn            AS "retireYn",
                join_dt              AS "joinDt",
-               retire_dt            AS "retireDt",
+               employment_yn        AS "employmentYn",
                tel_no               AS "telNo",
                cell_no              AS "cellNo",
                email_addr           AS "emailAddr",
                pw                   AS "pw",
                pw_chg_dt            AS "pwChgDt",
                account_lock_yn      AS "accountLockYn",
-               etc1                 AS "etc1",
-               etc2                 AS "etc2",
-               etc3                 AS "etc3",
+               (SELECT GROUP_CONCAT(auth_seq) FROM tb_sys_auth_user WHERE user_seq=A.user_seq) AS "userAuthCodes",
                use_yn               AS "useYn",
                reg_user_no          AS "regUserNo",
-               reg_dt               AS "regDt",
+               fn_getUserNm(reg_user_no) AS "regUserNm",
+               date_format(reg_dt, '%Y-%m-%d %H:%i:%s') AS "regDt",
                mod_user_no          AS "modUserNo",
-               mod_dt               AS "modDt"
+               fn_getUserNm(mod_user_no) AS "modUserNm",
+               date_format(mod_dt, '%Y-%m-%d %H:%i:%s') AS "modDt"
           FROM tb_sys_user A
-         <where>
-           user_seq = #{userSeq}
-         </where>
+         WHERE user_seq=#{userSeq}
+    </select>
+
+    <!-- 사용자 아이디 체크 -->
+    <select id="getIdCheck" resultType="int">
+        SELECT count(1) FROM tb_sys_user WHERE company_cd = #{companyCd} AND user_id = #{userId}
+    </select>
+
+    <!-- 사용자 아이디, 비밀번호 체크 -->
+    <select id="getIdPwdCheck" resultType="int">
+        SELECT count(1) FROM tb_sys_user WHERE company_cd = #{companyCd} AND user_id = #{userId} AND pw = password(#{pw})
+    </select>
+
+    <!-- 로그인정보 조회 -->
+    <select id="getLogin" resultType="kr.co.kmac.system.dto.UserDto$Info">
+        SELECT user_seq             AS "userSeq",
+               company_cd           AS "companyCd",
+               user_id              AS "userId",
+               user_nm              AS "userNm",
+               dept_cd              AS "deptCd",
+               dept_nm              AS "deptNm",
+               title_cd             AS "titleCd",
+               title_nm             AS "titleNm",
+               (SELECT GROUP_CONCAT(T2.auth_cd) FROM tb_sys_auth_user T1, tb_sys_auth T2 WHERE T1.auth_seq=T2.auth_seq AND T1.user_seq=A.user_seq) AS "userAuthCodes"
+          FROM tb_sys_user A
+         WHERE company_cd = #{companyCd}
+           AND user_id = #{userId}
+           AND use_yn  = 'Y'
+           AND employment_yn = 'Y'
+           AND pw = password(#{pw})
+    </select>
+
+    <!-- 처리자 목록[dropdown용] 조회 -->
+    <select id="getActUserList" resultType="kr.co.kmac.system.dto.CodeDto$CommonCode">
+        SELECT
+            A.user_nm       AS "name",
+            A.user_seq      AS "value"
+        FROM tb_sys_user A ,tb_sys_auth_user B, tb_sys_auth C
+        WHERE A.user_seq=B.user_seq
+          AND B.auth_seq=C.auth_seq
+          AND A.company_cd = #{companyCd}
+          AND C.auth_cd ='500'
+        ORDER BY A.user_seq
     </select>
 
 	<!-- 사용자정보 등록 -->
-    <insert id="insertSysUser">
+    <insert id="insertUser">
         INSERT INTO tb_sys_user
 		(
-			user_seq,
-   hotel_cd,
-   user_id,
-   emp_type_cd,
-   emp_no,
-   user_nm,
-   user_nm_en,
-   company_cd,
-   company_nm,
-   dept_cd,
-   dept_nm,
-   real_dept_cd,
-   real_dept_nm,
-   duty_cd,
-   duty_nm,
-   position_cd,
-   position_nm,
-   title_cd,
-   title_nm,
-   retire_yn,
-   join_dt,
-   retire_dt,
-   tel_no,
-   cell_no,
-   email_addr,
-   pw,
-   pw_chg_dt,
-   account_lock_yn,
-   etc1,
-   etc2,
-   etc3,
-   use_yn,
-   reg_user_no,
-   reg_dt,
-   mod_user_no,
-   mod_dt
+            company_cd,
+            user_id,
+            user_nm,
+            dept_cd,
+            dept_nm,
+            title_cd,
+            title_nm,
+            join_dt,
+            employment_yn,
+            tel_no,
+            cell_no,
+            email_addr,
+            pw,
+            pw_chg_dt,
+            account_lock_yn,
+            use_yn,
+            reg_user_no,
+            mod_user_no
 		)
 		VALUES
 		(
-			#{userSeq},
-   #{hotelCd},
-   #{userId},
-   #{empTypeCd},
-   #{empNo},
-   #{userNm},
-   #{userNmEn},
-   #{companyCd},
-   #{companyNm},
-   #{deptCd},
-   #{deptNm},
-   #{realDeptCd},
-   #{realDeptNm},
-   #{dutyCd},
-   #{dutyNm},
-   #{positionCd},
-   #{positionNm},
-   #{titleCd},
-   #{titleNm},
-   #{retireYn},
-   #{joinDt},
-   #{retireDt},
-   #{telNo},
-   #{cellNo},
-   #{emailAddr},
-   #{pw},
-   #{pwChgDt},
-   #{accountLockYn},
-   #{etc1},
-   #{etc2},
-   #{etc3},
-   #{useYn},
-   #{regUserNo},
-   #{regDt},
-   #{modUserNo},
-   #{modDt}
+			#{companyCd},
+            #{userId},
+            #{userNm},
+            #{deptCd},
+            #{deptNm},
+            #{titleCd},
+            #{titleNm},
+            REPLACE(#{joinDt},'-',''),
+            #{employmentYn},
+            #{telNo},
+            #{cellNo},
+            #{emailAddr},
+            password(#{pw}),
+            DATE_FORMAT(NOW(),'%Y%m%d'),
+            #{accountLockYn},
+            'Y',
+            #{regUserNo},
+            #{modUserNo}
 		)
 		<selectKey resultType="int" keyProperty="returnKey" order="AFTER">
             SELECT LAST_INSERT_ID()
@@ -260,55 +180,35 @@
     </insert>
 
 	<!-- 사용자정보 수정 -->
-    <update id="updateSysUser">
+    <update id="updateUser">
 		UPDATE tb_sys_user SET
-			hotel_cd             = #{hotelCd},
-   user_id              = #{userId},
-   emp_type_cd          = #{empTypeCd},
-   emp_no               = #{empNo},
-   user_nm              = #{userNm},
-   user_nm_en           = #{userNmEn},
-   company_cd           = #{companyCd},
-   company_nm           = #{companyNm},
-   dept_cd              = #{deptCd},
-   dept_nm              = #{deptNm},
-   real_dept_cd         = #{realDeptCd},
-   real_dept_nm         = #{realDeptNm},
-   duty_cd              = #{dutyCd},
-   duty_nm              = #{dutyNm},
-   position_cd          = #{positionCd},
-   position_nm          = #{positionNm},
-   title_cd             = #{titleCd},
-   title_nm             = #{titleNm},
-   retire_yn            = #{retireYn},
-   join_dt              = #{joinDt},
-   retire_dt            = #{retireDt},
-   tel_no               = #{telNo},
-   cell_no              = #{cellNo},
-   email_addr           = #{emailAddr},
-   pw                   = #{pw},
-   pw_chg_dt            = #{pwChgDt},
-   account_lock_yn      = #{accountLockYn},
-   etc1                 = #{etc1},
-   etc2                 = #{etc2},
-   etc3                 = #{etc3},
-   use_yn               = #{useYn},
-   reg_user_no          = #{regUserNo},
-   reg_dt               = #{regDt},
-   mod_user_no          = #{modUserNo},
-   mod_dt               = #{modDt}
-		<where>
-             user_seq=#{userSeq}
-         </where>	
+			user_nm              = #{userNm},
+            dept_cd              = #{deptCd},
+            dept_nm              = #{deptNm},
+            title_cd             = #{titleCd},
+            title_nm             = #{titleNm},
+            join_dt              = REPLACE(#{joinDt},'-',''),
+            employment_yn        = #{employmentYn},
+            tel_no               = #{telNo},
+            cell_no              = #{cellNo},
+            email_addr           = #{emailAddr},
+            account_lock_yn      = #{accountLockYn},
+            mod_user_no          = #{modUserNo}
+        WHERE user_seq=#{userSeq}
 	</update>
 
-	<!-- 사용자정보 삭제 -->
-    <update id="deleteSysUser">
-        UPDATE tb_sys_user
-           SET use_at = 'N'
-         <where>
-             user_seq=#{userSeq}
-         </where>
+    <!-- 사용자정보 수정 -->
+    <update id="updateUserPw">
+        UPDATE tb_sys_user SET
+               pw             = password(#{pw}),
+               pw_chg_dt      = DATE_FORMAT(NOW(),'%Y%m%d')
+        WHERE user_seq=#{userSeq}
     </update>
 
+	<!-- 사용자정보 삭제 -->
+    <update id="deleteUser">
+        UPDATE tb_sys_user
+           SET use_yn = 'N'
+         WHERE user_seq=#{userSeq}
+    </update>
 </mapper>

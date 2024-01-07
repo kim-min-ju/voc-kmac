@@ -1,25 +1,7 @@
-let $Grid        = null;
-
-let GRID_OPTIONS = {
-    columns     : [
-        { data: 'authSeq',    className: "select-checkbox",
-            'render': function (data, type, full, meta) {
-                return '<input type="radio" value="'+data+'" />';
-            }
-        },
-        //{ data: 'authSeq',   className: "text-center"   },
-        { data: 'authCd',   className: "text-center"   },
-        { data: 'authNm',   className: "text-center"   },
-        { data: 'authDesc',   className: "text-center"   },
-        { data: 'useYn',   className: "text-center"   },
-        { data: 'regUserNm',   className: "text-center" },
-        { data: 'regDt',   className: "text-center" },
-        { data: 'modUserNm',   className: "text-center" },
-        { data: 'modDt',   className: "text-center" },
-    ],
-    //scrollY             : '300px',
-    scrollCollapse      : true,
-};
+let $Grid1        = null;
+let $Grid2        = null;
+let $selectedRowData1 = {};
+let $selectedRowData2 = {};
 
 $(function () {
     // 초기 설정 및 수행
@@ -32,131 +14,202 @@ $(function () {
  */
 let init = function(){
     // 초기 화면 구성 ----------------
-    //$('.modal-auth').modal('hide').modal('hide dimmer');
 
-    // datepicker loading 적용
-    // UIUtil.loadDatepicker($("#selectedDt"));
+    // dropdown 생성 ----------------
+    DropdownUtil.makeCompList($('#searchForm').find('.d-companyCd'));       // 회사코드
+    DropdownUtil.makeCompList($('#registCodeForm1').find('.d-companyCd'));  // 회사코드
+    DropdownUtil.makeCodeList('COM999','USE_YN', $('#registCodeForm1').find('.d-useYn'));
+    DropdownUtil.makeCodeList('COM999','USE_YN', $('#registCodeForm2').find('.d-useYn'));
 
     // event 연결 ----------------
-    $('.btn-search').on('click', function(){ ajaxLoadData(); });
-    $('.btn-wrap .btn-add').on('click', function(){ popAddAuth(); });
-    $('.btn-save').on('click', function(){ saveData(); });
-    $('.btn-wrap .btn-dtl').on('click', function(){ popDtlAuth(); });
-    $('.btn-delt').on('click', function(){ deleteData(); });
+    $('.btn-search').on('click', function(){ loadGrid1(); });
+    $('.btn-wrap .btn-add1').on('click', function(){ popAddCode('1'); });
+    $('.btn-save1').on('click', function(){ saveData('1'); });
+    $('.btn-wrap .btn-dtl1').on('click', function(){ popDtlCode('1'); });
+    $('.btn-delt1').on('click', function(){ deleteData('1'); });
 
-    ajaxLoadData();
+    $('.btn-wrap .btn-add2').on('click', function(){ popAddCode('2'); });
+    $('.btn-save2').on('click', function(){ saveData('2'); });
+    $('.btn-wrap .btn-dtl2').on('click', function(){ popDtlCode('2'); });
+    $('.btn-delt2').on('click', function(){ deleteData('2'); });
 
+    //더블클릭시 상세화면 이동
+    $('#listDataTableCode1 tbody').on('dblclick', 'tr', function (e) {
+        popDtlCode('1');
+    });
+    $('#listDataTableCode2 tbody').on('dblclick', 'tr', function (e) {
+        popDtlCode('2');
+    });
+
+    // 공통코드에서만 사용하는 공통회사코드 추가
+    setTimeout(function(){ $('.d-companyCd').find('.menu').append('<div class="item" data-value="COM999">시스템공통</div>');},1000);
+
+    loadGrid1();
 }
 
 /**
- * 지정된 날짜의 방문자 통계 정보를 조회
- *  => chart 및 grid를 그린다.
+ * 그리드 옵션
  */
-let ajaxLoadData = function(){
-    let param = {};
-    param.useYn = $('#searchForm').find('#useYn').val();
-    param.authCd = $('#searchForm').find('#authCd').val();
-    param.authNm = $('#searchForm').find('#authNm').val();
-console.log(param);
-    AjaxUtil.get(
-        '/kmacvoc/v1/auth/list',
-        param,
-        function(result){
-            if(result && result.data && result.data.list){
-                // grid를 그린다.
-                loadGridOneDay(result.data.list);
+let GRID_OPTIONS1 = {
+    columns     : [
+        { data: 'codeSeq',    className: "select-checkbox",
+            'render': function (data, type, full, meta) {
+                return '<input type="radio" value="'+data+'" />';
             }
-        }
-    );
-}
+        },
+        { data: 'companyCd',   className: "text-center" },
+        { data: 'code',   className: "text-center" },
+        { data: 'codeNm',   className: "text-center"   },
+        //{ data: 'useYn',   className: "text-center"   },
+        { data: 'regUserNm',   className: "text-center" },
+        { data: 'regDt',   className: "text-center" },
+        { data: 'modUserNm',   className: "text-center" },
+        { data: 'modDt',   className: "text-center" },
+    ],
+    pageLength : 5,
+    scrollCollapse      : true,
+};
 
-
-/**
- * Grid 구성
- *
- * @param loadDataSet grid를 그릴 dataset
- */
-let loadGridOneDay = function(loadDataSet){
-
-    let gridOptions = $.extend(true, {}, GRID_OPTIONS);
-
-    // gird 생성시.
-    if($Grid == null){
-        /*
-                if(ObjectUtil.isEmpty(loadDataSet)){
-                    gridOptions.ajax = {
-                        url   : '/statistics/getStatisticsOneDayDatas',
-                        type  : 'get',
-                        data  : {
-                            // reload시에 변경된 parameter를 적용하기 위해 function(){return...;} 형태로 구성
-                            date : function(){ return $("#selectedDt").val();}
-                        },
-                        dataType: "JSON"
-                    }
-                }
-                else {
-                    gridOptions_.data = loadDataSet;
-                }
-        */
-
-        gridOptions.data = loadDataSet;
-
-        // grid 생성
-        $Grid = gridUtil.loadGrid("listDataTable", gridOptions);
-    }
-    // reload 시.
-    else {
-        // ajax가 정의 되어 있을 때
-        if(gridOptions.ajax){
-            $Grid.ajax.reload();
-        }
-        // ajax가 정의되지 않고 dataSet으로 그릴 때
-        else {
-            $Grid.clear();                  // clear
-            $Grid.rows.add(loadDataSet);    // Add new data
-            $Grid.columns.adjust().draw();  // Redraw the DataTable
-        }
-    }
-
+let GRID_OPTIONS2 = {
+    columns     : [
+        { data: 'codeSeq',    className: "select-checkbox",
+            'render': function (data, type, full, meta) {
+                return '<input type="radio" value="'+data+'" />';
+            }
+        },
+        { data: 'code',   className: "text-center"   },
+        { data: 'codeNm',   className: "text-center"   },
+        { data: 'refVal1',   className: "text-center"   },
+        { data: 'refVal2',   className: "text-center"   },
+        { data: 'refVal3',   className: "text-center"   },
+        { data: 'dispOrder',   className: "text-center"   },
+        { data: 'useYn',   className: "text-center"   },
+        { data: 'regUserNm',   className: "text-center" },
+        { data: 'regDt',   className: "text-center" },
+        { data: 'modUserNm',   className: "text-center" },
+        { data: 'modDt',   className: "text-center" },
+    ],
+    //scrollY             : '300px',
+    scrollCollapse      : true,
 };
 
 /**
- * 등록/수정을 위한 권한상세팝업 오픈
+ * Grid 구성
  */
-let popAddAuth = function(){
-    $('#registForm').form('reset');
-    $('.ui.modal-auth').modal('show');
+let loadGrid1 = function(){
+    let param = $('#searchForm').form('get.values');
+    let gridOptions = $.extend(true, {}, GRID_OPTIONS1);
+    let url = '/kmacvoc/v1/code/list';
+
+    param.codeType = 'CODE_TYPE';
+
+    $Grid1 = gridUtil.loadGrid("listDataTableCode1", gridOptions, url, param);
+    let $DataTable = $('#listDataTableCode1').DataTable();
+    $DataTable.on( 'select', function ( e, dt, type, indexes ) {
+        if ( type === 'row' ) {
+            $selectedRowData1 = $DataTable.rows( indexes ).data()[0];
+            loadGrid2();
+        }
+    });
+
+    //grid 생성 시, 첫번째 row click
+    $DataTable.on('draw', function () {
+        $DataTable.row(':eq(0)').select();
+    })
+};
+let loadGrid2 = function(){
+    let param = {};
+    let gridOptions = $.extend(true, {}, GRID_OPTIONS2);
+    let url = '/kmacvoc/v1/code/list';
+
+    if($selectedRowData1 == undefined) {
+        param.codeType = 'ZZZZZ';   //값이 조회되지 않게 하기위한 더미값
+    } else {
+        param.codeType = $selectedRowData1.code;
+    }
+    $Grid2 = gridUtil.loadGrid("listDataTableCode2", gridOptions, url, param);
+
+    let $DataTable = $('#listDataTableCode2').DataTable();
+    $DataTable.on( 'select', function ( e, dt, type, indexes ) {
+        if ( type === 'row' ) {
+            $selectedRowData2 = $DataTable.rows( indexes ).data()[0];
+        }
+    });
+};
+
+/**
+ * 등록을 위한 코드상세팝업 오픈
+ */
+let popAddCode = function(flag){
+    if(flag == '1') {
+        $('#registCodeForm1').form('clear');
+        $('#registCodeForm1').find('#codeSeq').val('0');
+        $('#registCodeForm1').find('.d-companyCd').dropdown('set selected', $SessionInfo.getCompanyCd());
+        $('.ui.modal-code1').modal('show');
+    } else {
+        if($selectedRowData1.code == '') {
+            alert('코드유형을 선택해 주세요.');
+            return;
+        }
+        $('#registCodeForm2').form('clear');
+        // 코드유형 셋팅
+        $('#registCodeForm2').form('set.values', {
+            codeType: $selectedRowData1.code,
+            companyCd: $selectedRowData1.companyCd,
+            codeSeq:0
+        });
+        $('.ui.modal-code2').modal('show');
+    }
 }
 
 /**
- * 권한상세 팝업
+ * 코드상세 팝업
  */
-let popDtlAuth =  function(){
-    console.log('$selectedRowData',$selectedRowData);
-    $('#registForm').form('reset');
-    $('#registForm').form('set.values', {
-        authCd: $selectedRowData.authCd,
-        authDesc: $selectedRowData.authDesc,
-        authNm: $selectedRowData.authNm,
-        authSeq: $selectedRowData.authSeq,
-        modDt: $selectedRowData.modDt,
-        modUserNm: $selectedRowData.modUserNm,
-        //modUserNo: $selectedRowData.modUserNo,
-        regDt: $selectedRowData.regDt,
-        regUserNm: $selectedRowData.regUserNm,
-        //regUserNo: $selectedRowData.regUserNo,
-        useYn: $selectedRowData.useYn,
-    });
-    $('.btn-delt').removeClass('blind');
-    $('.ui.modal-auth').modal('show');
+let popDtlCode =  function(flag){
+    if(flag == '1') {
+        if($selectedRowData.code == undefined) {
+            alert('코드유형목록을 선택해 주세요');
+            return;
+        }
+        AjaxUtil.get(
+            '/kmacvoc/v1/code/'+$selectedRowData1.codeSeq,
+            {},
+            function(result){
+                if(result && result.data){
+                    $('#registCodeForm1').form('clear');
+                    $('#registCodeForm1').form('set.values', result.data);
+                    $('.btn-delt1').removeClass('blind');
+                    $('.ui.modal-code1').modal('show');
+                }
+            }
+        );
+    } else {
+        if($selectedRowData2.code == undefined) {
+            alert('코드목록을 선택해 주세요');
+            return;
+        }
+        AjaxUtil.get(
+            '/kmacvoc/v1/code/'+$selectedRowData2.codeSeq,
+            {},
+            function(result){
+                if(result && result.data){
+                    $('#registCodeForm2').form('clear');
+                    $('#registCodeForm2').form('set.values', result.data);
+                    $('.btn-delt2').removeClass('blind');
+                    $('.ui.modal-code2').modal('show');
+                }
+            }
+        );
+    }
 }
 
 /**
  * 데이터 저장
  */
-let saveData = function(){
-    let formData = $('#registForm').serializeObject();
-    let url = formData.authSeq == '' ? '/kmacvoc/v1/auth/add' : '/kmacvoc/v1/auth/modify';
+let saveData = function(flag){
+    if(flag == '1') $('#registCodeForm1').find('#codeType').val('CODE_TYPE');
+    let formData = flag=='1' ? $('#registCodeForm1').serializeObject() : $('#registCodeForm2').serializeObject();
+    let url = formData.codeSeq == '0' ? '/kmacvoc/v1/code/add' : '/kmacvoc/v1/code/modify';
 
     AjaxUtil.post(
         url,
@@ -164,9 +217,13 @@ let saveData = function(){
         function(result){
             if(result && result.messageCode == '0000'){
                 alert(result.data.rtnMessage);
-                $('.ui.modal-auth').modal('hide');
-                // grid를 그린다.
-                ajaxLoadData();
+                if(flag == '1') {
+                    $('.ui.modal-code1').modal('hide');
+                    loadGrid1();
+                } else if(flag == '2') {
+                    $('.ui.modal-code2').modal('hide');
+                    loadGrid2();
+                }
             }
         }
     );
@@ -175,12 +232,12 @@ let saveData = function(){
 /**
  * 데이터 삭제
  */
-let deleteData = function(){
+let deleteData = function(flag){
 
-    if(!confirm('권한정보를 삭제하시겠습니까?')) return;
+    if(!confirm('코드정보를 삭제하시겠습니까?')) return;
 
-    let authSeq = $('#registForm').find('#authSeq').val();
-    let url = '/kmacvoc/v1/auth/remove/'+authSeq;
+    let codeSeq = flag == '1' ? $('#registCodeForm1').find('#codeSeq').val() : $('#registCodeForm2').find('#codeSeq').val();
+    let url = '/kmacvoc/v1/code/remove/'+codeSeq;
 
     AjaxUtil.post(
         url,
@@ -188,9 +245,13 @@ let deleteData = function(){
         function(result){
             if(result && result.messageCode == '0000'){
                 alert(result.data.rtnMessage);
-                $('.ui.modal-auth').modal('hide');
-                // grid를 그린다.
-                ajaxLoadData();
+                if(flag == '1') {
+                    $('.ui.modal-code1').modal('hide');
+                    loadGrid1();
+                } else if(flag == '2') {
+                    $('.ui.modal-code2').modal('hide');
+                    loadGrid2();
+                }
             }
         }
     );

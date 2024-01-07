@@ -11,7 +11,7 @@
         <title th:text="사용자관리"></title>
 
         <!-- 업무용 자바스크립트 (HEAD) 안에 위치 -->
-	    <script th:src="@{/js/system/user.js}"></script>
+	    <script th:src="@{/js/system/user_list.js}"></script>
 
     </head>
 <body>
@@ -25,25 +25,41 @@
 			</ul>
 		</div>
 		<div class="search-area">
-		<form id="searchForm" method="post">
+		<form id="searchForm">
 			<div class="search-inner">
 				<div class="ui form">
 					<div class="fields">
-						<div class="four wide field">
+						<div class="two wide field">
 							<label>회사명</label>
-							<div class="ui selection dropdown">
+							<div class="ui selection dropdown d-companyCd">
 								<input type="hidden" id="companyCd" name="companyCd">
-								<div class="default text">회사명</div>
+								<div class="default text">선택</div>
 								<i class="dropdown icon"></i>
 							</div>
 						</div>
-						<div class="four wide field">
+						<div class="two wide field">
 							<label>사용자아이디</label>
-							<input type="text" id="userCd" name="userNm" placeholder="사용자아이디" >
+							<input type="text" id="userId" name="userId" placeholder="사용자아이디" >
 						</div>
-						<div class="four wide field">
+						<div class="two wide field">
 							<label>사용자명</label>
 							<input type="text" id="userNm" name="userNm" placeholder="사용자명" >
+						</div>
+						<div class="two wide field">
+							<label>전화번호</label>
+							<input type="text" id="telNo" name="telNo" placeholder="전화번호" >
+						</div>
+						<div class="two wide field">
+							<label>이메일</label>
+							<input type="text" id="emailAddr" name="emailAddr" placeholder="이메일" >
+						</div>
+						<div class="two wide field">
+							<label>재직여부</label>
+							<div class="ui selection dropdown d-employmentYn">
+								<input type="hidden" id="employmentYn" name="employmentYn">
+								<div class="default text">선택</div>
+								<i class="dropdown icon"></i>
+							</div>
 						</div>
 						<!-- [dev] 검색영역 내 조회 버튼은 "two wide field btn-search" 클래스 사용 -->
 						<div class="two wide field btn-search">
@@ -61,7 +77,7 @@
 			<div class="btn-wrap"></div>
 
 			<div class="btn-wrap">
-				<div class="ui button btn-darkgray btn-add">등록</div>
+				<div class="ui button btn-darkgray btn-add">사용자등록</div>
 				<div class="ui button btn-darkgray btn-dtl">상세</div>
 			</div>
 		</div>
@@ -71,42 +87,30 @@
 				<table id="listDataTableUser" class="display stripe hover">
 					<colgroup>
 						<col style="width:4%">
-						<col style="width:5%">
-						<col style="width:5%">
-						<col style="width:5%">
-						<col style="width:5%">
-						<col style="width:5%">
 						<col style="width:8%">
-						<col style="width:4%">
-						<col style="width:4%">
-						<col style="width:4%">
-						<col style="width:4%">
-						<col style="width:5%">
-						<col style="width:5%">
-						<col style="width:5%">
-						<col style="width:5%">
-						<col style="width:5%">
+						<col style="width:6%">
+						<col style="width:6%">
+						<col style="width:6%">
+						<col style="width:6%">
 						<col style="width:8%">
-						<col style="width:5%">
+						<col style="width:auto">
 						<col style="width:8%">
+						<col style="width:8%">
+						<col style="width:10%">
+						<col style="width:8%">
+						<col style="width:10%">
 					</colgroup>
 					<thead>
 					<tr>
 						<th>선택</th>
 						<th>회사명</th>
-						<th>직원구분코드</th>
-						<th>사용자아이디</th>
-						<th>사번</th>
+						<th>사용자ID</th>
 						<th>사용자명</th>
-						<th>사용자영문명</th>
 						<th>부서</th>
-						<th>직무</th>
-						<th>직위</th>
 						<th>직급</th>
-						<th>입사일자</th>
-						<th>퇴사일자</th>
-						<th>이메일주소</th>
-						<th>사용여부</th>
+						<th>전화번호</th>
+						<th>이메일</th>
+						<th>재직여부</th>
 						<th>등록자</th>
 						<th>등록일시</th>
 						<th>수정자</th>
@@ -128,201 +132,10 @@
 						<td></td>
 						<td></td>
 						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
 					</tr>
 					</tbody>
 				</table>
 			</div>
-		</div>
-	</div>
-
-	<!-- 상세모달창 -->
-	<div class="ui modal modal-user" style="width:1300px; !important;">
-		<i class="close icon"></i>
-		<div class="header">사용자관리</div>
-		<div class="content">
-			<div class="search-area">
-				<div class="search-inner">
-					<div class="ui form">
-						<form id="registForm" method="post">
-						<div class="fields">
-							<div class="four wide field">
-								<label>회사명</label>
-								<div class="ui selection dropdown">
-									<input type="hidden" id="companyCd" name="companyCd">
-									<div class="default text">선택</div>
-									<i class="dropdown icon"></i>
-									<div class="menu">
-										<div class="item" data-value="TEST01">TEST01</div>
-										<div class="item" data-value="TEST02">TEST02</div>
-									</div>
-								</div>
-							</div>
-							<div class="four wide field">
-								<label>사용자아이디</label>
-								<input type="hidden" id="userSeq" name="userSeq">
-								<input type="text" name="userId" placeholder="사용자아이디" >
-							</div>
-							<div class="four wide field">
-								<label>직원구분코드</label>
-								<div class="ui selection dropdown">
-									<input type="hidden" id="empTypeCd" name="empTypeCd">
-									<div class="default text">직원구분코드</div>
-									<i class="dropdown icon"></i>
-									<div class="menu">
-										<div class="item" data-value="TEST01">TEST1</div>
-										<div class="item" data-value="TEST02">TEST2</div>
-									</div>
-								</div>
-							</div>
-							<div class="four wide field">
-								<label>사번</label>
-								<input type="text" name="empNo" placeholder="사번" >
-							</div>
-							<div class="four wide field">
-								<label>사용자명</label>
-								<input type="text" name="userNm" placeholder="사용자명" >
-							</div>
-							<div class="four wide field">
-								<label>사용자명(영문)</label>
-								<input type="text" name="userNmEn" placeholder="사용자명(영문)" >
-							</div>
-						</div>
-						<div class="fields">
-							<div class="four wide field">
-								<label>부서코드</label>
-								<input type="text" name="deptCd" placeholder="부서코드" >
-							</div>
-							<div class="four wide field">
-								<label>부서명</label>
-								<input type="text" name="deptNm" placeholder="부서명" >
-							</div>
-							<div class="four wide field">
-								<label>직무코드</label>
-								<input type="text" name="dutyCd" placeholder="직무코드" >
-							</div>
-							<div class="four wide field">
-								<label>직무명</label>
-								<input type="text" name="dutyNm" placeholder="직무명" >
-							</div>
-							<div class="four wide field">
-								<label>직위코드</label>
-								<input type="text" name="positionCd" placeholder="직위코드" >
-							</div>
-							<div class="four wide field">
-								<label>직위명</label>
-								<input type="text" name="positionNm" placeholder="직위명" >
-							</div>
-						</div>
-						<div class="fields">
-							<div class="four wide field">
-								<label>직급코드</label>
-								<input type="text" name="titleCd" placeholder="직급코드" >
-							</div>
-							<div class="four wide field">
-								<label>직급명</label>
-								<input type="text" name="titleNm" placeholder="직급명" >
-							</div>
-							<div class="four wide field">
-								<label>재직여부</label>
-								<div class="ui selection dropdown d-employmentYn">
-									<input type="hidden" id="employmentYn" name="employmentYn">
-									<div class="default text">선택</div>
-									<i class="dropdown icon"></i>
-								</div>
-							</div>
-							<div class="four wide field">
-								<label>입사일자</label>
-								<div class="calendar-area">
-									<div class="field">
-										<div class="ui calendar">
-											<div class="ui input right icon">
-												<i class="calendar icon"></i>
-												<input type="text" name="joinDt" placeholder="입사일자" >
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="four wide field">
-								<label>퇴사일자</label>
-								<div class="calendar-area">
-									<div class="field">
-										<div class="ui calendar">
-											<div class="ui input right icon">
-												<i class="calendar icon"></i>
-												<input type="text" name="retireDt" placeholder="퇴사일자" >
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="four wide field">
-								<label>사용여부</label>
-								<div class="ui selection dropdown d-useYn">
-									<input type="hidden" id="useYn" name="useYn">
-									<div class="default text">선택</div>
-									<i class="dropdown icon"></i>
-								</div>
-							</div>
-						</div>
-						<div class="fields">
-							<div class="four wide field">
-								<label>전화번호</label>
-								<input type="text" name="telNo" placeholder="전화번호" >
-							</div>
-							<div class="four wide field">
-								<label>휴대전화번호</label>
-								<input type="text" name="cellNo" placeholder="휴대전화번호" >
-							</div>
-							<div class="seven wide field">
-								<label>이메일주소</label>
-								<input type="text" name="emailAddr" placeholder="이메일주소" >
-							</div>
-							<div class="four wide field">
-								<label>비밀번호</label>
-								<input type="password" name="pw" placeholder="비밀번호" >
-							</div>
-						</div>
-						<div class="fields">
-							<div class="four wide field">
-								<label>비밀번호변경일</label>
-								<input type="text" name="pwChgDt" placeholder="비밀번호변경일" readonly >
-							</div>
-							<div class="four wide field">
-								<label>사용자계정잠금여부</label>
-								<div class="ui selection dropdown">
-									<input type="hidden" id="accountLockYn" name="accountLockYn">
-									<div class="default text">선택</div>
-									<i class="dropdown icon"></i>
-									<div class="menu">
-										<div class="item" data-value="Y">Y</div>
-										<div class="item" data-value="N">N</div>
-									</div>
-								</div>
-							</div>
-							<div class="seven wide field">
-								<label>등록자/등록일시</label>
-								<input type="text" name="regUserNm" style="width:100px" value="" readonly> <input type="text" name="regDt" style="width:200px"  value="" readonly>
-							</div>
-							<div class="seven wide field">
-								<label>수정자/수정일시</label>
-								<input type="text" name="modUserNm" style="width:100px"  value="" readonly> <input type="text" name="modDt" style="width:200px"  value="" readonly>
-							</div>
-						</div>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="actions">
-			<button class="ui button btn-darkgray btn-save">저장</button>
-			<button class="ui button btn-darkgray btn-delt">삭제</button>
 		</div>
 	</div>
 </body>

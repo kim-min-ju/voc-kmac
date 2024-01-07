@@ -6,21 +6,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * 권한 ViewController 클래스
+ * 메뉴 ViewController 클래스
  * 
- * @ClassName AuthViewController.java
- * @Description 권한 ViewController 클래스
+ * @ClassName MenuViewController.java
+ * @Description 메뉴 ViewController 클래스
  * @author mjkim
  * @since 2023. 9. 18.
  *
  */
 @Controller
-@RequestMapping("/system/auth")
-public class AuthViewController {
+@RequestMapping("/system/menu")
+public class MenuViewController {
 
     // 화면 오픈
     @GetMapping
     public String view(Model model) {
-        return "pages/system/auth";
+        return "pages/system/menu";
     }
 }

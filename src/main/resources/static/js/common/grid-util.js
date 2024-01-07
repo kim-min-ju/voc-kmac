@@ -1,3 +1,9 @@
+
+/*
+* datatables
+*/
+let $selectedRowData = {};
+
 let gridUtil = {
     /**
      * Grid(DataTables) 생성 및 loading
@@ -8,7 +14,7 @@ let gridUtil = {
      * @return grid  객체
      *
      */
-    loadGrid : function(gridTableId, reqGridOptions){
+    loadGrid : function(gridTableId, reqGridOptions, url, param){
         // grid 객체
         let $gridObj = null;
 
@@ -17,21 +23,63 @@ let gridUtil = {
         let $gridTableObj = $("#"+gridTableId);
         if(!$gridTableObj.length) return;
 
+        $gridTableObj.DataTable().destroy();
+
         // 기본 option
         let defaultGridOptions = {
-            responsive  : true,
-            lengthChange: true,
-            autoWidth   : true,
-            paging      : false,
-            searching   : false,
-            ordering    : false,
-            info        : false,    //'Showing 1 to 3 of 3 entries' 문자열 없애기 (=false)
-            language    : {
-                emptyTable      : "데이터가 없습니다.",
-                zeroRecords     : "No matching records found",
-                loadingRecords  : "Loading...",
-                thousands       : ",",
+            searching: false,
+            serverSide: true,
+            lengthChange: false,
+            columnDefs: [
+                {
+                    orderable: false,
+                    targets: "_all"
+                },
+            ],
+            language: {
+                "decimal" : "",
+                "emptyTable" : "데이터가 없습니다.",
+                "info" : "_START_ - _END_ (총 _TOTAL_ 건)",
+                "infoEmpty" : "0건",
+                "infoFiltered" : "(전체 _MAX_ 건 중 검색결과)",
+                "infoPostFix" : "",
+                "thousands" : ",",
+                "lengthMenu" : "_MENU_ 개씩 보기",
+                "loadingRecords" : "로딩중...",
+                "processing" : "처리중...",
+                "search" : "검색 : ",
+                "zeroRecords" : "검색된 데이터가 없습니다.",
+                "paginate" : {
+                    "first" : "첫 페이지",
+                    "last" : "마지막 페이지",
+                    "next" : "다음",
+                    "previous" : "이전"
+                },
+                "aria" : {
+                    "sortAscending" : " :  오름차순 정렬",
+                    "sortDescending" : " :  내림차순 정렬"
+                }
             },
+            ajax: {
+                cache: false,
+                url: url,
+                type: 'get',
+                dataType: 'json',
+                contentType: "application/json",
+                data: function (d) {
+                    d = $.extend({}, d, param);
+                    d.offset = d.start;
+                    return d;
+                },
+                dataSrc : function(json){
+                    json.recordsTotal = json.data.totalCount;
+                    json.recordsFiltered = json.data.totalCount;
+                    //console.log(json.data.list);
+                    return json.data.list;
+                }
+            },
+            order: [],
+            select: {style: 'single'},
             //buttons             : ["copy", "csv", "print"],
         }
 
@@ -43,8 +91,8 @@ let gridUtil = {
         let footerCalculationOpt = gridOptions.footerCalculation;
         // 예시)
         //  footerCalculation : {
-        //      targetColIndexs : [1,2,3,4,5,6,7,8,9,10,11],
-        //      rowCalcTypes    : ["sum", "average"],
+        //      targetSumColIndexs : [1,2,3,4,5,6],
+        //      targetAvgColIndexs : [7,8,9,10,11],
         //      isNumberFormat  : true,
         //  },
         if(typeof(gridOptions.footerCallback) != 'function' && footerCalculationOpt != undefined && footerCalculationOpt != null){
@@ -77,48 +125,43 @@ let gridUtil = {
                             i : 0;
                 };
                 // 대상 column index 배열 (합계 또는 평균의 계산 표시 대상 column의 index 배열)
-                //var coltosumIdxs    = [1,2,3,4,5,6,7,8,9,10,11];
-                var coltosumIdxs    = footerCalculationOpt.targetColIndexs;
-                //var rowCalcTypes    = ["sum", "average"];
-                var rowCalcTypes    = footerCalculationOpt.rowCalcTypes;
+                var coltosumIdxs    = footerCalculationOpt.targetSumColIndexs;
+                var coltoavgIdxs    = footerCalculationOpt.targetAvgColIndexs;
                 // footer가 있을 때
                 let $footerRows = $(api.table().footer()).find("tr");
 
-                var enableRowCount  = 0;
-                if($footerRows.length ){
-                    enableRowCount  = (rowCalcTypes.length <= $footerRows.length)? rowCalcTypes.length : $footerRows.length;
+                // ---- 합계 계산
+                for (let colIdx in coltosumIdxs){
+                    let total     = api.column( coltosumIdxs[colIdx] ).data().reduce( function (a, b) {return intVal(a) + intVal(b);}, 0 );
+                    // Total over this page
+                    let pageTotal = api.column( coltosumIdxs[colIdx], { page: 'current'} ).data().reduce( function (a, b) {return intVal(a) + intVal(b);}, 0 );
+                    // Footer에 값 적용
+                    let $row = $footerRows;
+                    let viewData = pageTotal;    // 합계
+
+                    // Update footer : numberFormat 적용
+                    let realViewData = (!ObjectUtil.isEmpty(footerCalculationOpt.isNumberFormat) && footerCalculationOpt.isNumberFormat)? Util.numberFormat(viewData) : viewData;
+                    let $cellObj = $row.find("th");
+                    let intColEqIdx = parseInt(coltosumIdxs[colIdx]) - $cellObj.eq(0).attr('colspan') + 1;
+                    $cellObj.eq(intColEqIdx).html( realViewData );
                 }
 
-                // 계산 내용 처리
-                // -- 현재는 합계(sum), 평균(average) 만 처리함.
-                if(enableRowCount > 0){
+                // ---- 평균 계산
+                for (let colIdx in coltoavgIdxs){
+                    // ---- 평균 계산
+                    let total     = api.column( coltoavgIdxs[colIdx] ).data().reduce( function (a, b) {return intVal(a) + intVal(b);}, 0 );
+                    let pageTotal = api.column( coltoavgIdxs[colIdx], { page: 'current'} ).data().reduce( function (a, b) {return intVal(a) + intVal(b);}, 0 );
+                    let avg = ( (end != null && end != 0)? pageTotal / end : 0 ).toFixed(1);
 
-                    for (let colIdx in coltosumIdxs){
-                        // ---- 합계 계산
-                        let total     = api.column( coltosumIdxs[colIdx] ).data().reduce( function (a, b) {return intVal(a) + intVal(b);}, 0 );
-                        // Total over this page
-                        let pageTotal = api.column( coltosumIdxs[colIdx], { page: 'current'} ).data().reduce( function (a, b) {return intVal(a) + intVal(b);}, 0 );
-                        // Update footer
-                        //$( api.column( coltosumIdxs[colIdx] ).footer() ).html(pageTotal+'('+total+')');
-                        // ---- 평균 계산
-                        let avg = ( (end != null && end != 0)? pageTotal / end : 0 ).toFixed(1);
+                    // Footer에 값 적용
+                    let $row = $footerRows;
+                    let viewData = avg;     // 평균
 
-                        // Footer에 값 적용
-                        for(let rowIdx = 0 ; rowIdx<enableRowCount ; rowIdx++){
-                            let $row = $footerRows.eq(rowIdx);
-
-                            let viewData = "";
-                                 if(rowCalcTypes[rowIdx] == 'sum')     viewData = pageTotal;    // 합계
-                            else if(rowCalcTypes[rowIdx] == 'average') viewData = avg;          // 평균
-
-                            let intColEqIdx = parseInt(colIdx)+1;
-
-                            // Update footer : numberFormat 적용
-                            let realViewData = (!ObjectUtil.isEmpty(footerCalculationOpt.isNumberFormat) && footerCalculationOpt.isNumberFormat)? Util.numberFormat(viewData) : viewData;
-                            let $cellObj = $row.find("th");
-                            $cellObj.eq(intColEqIdx).html( realViewData );
-                        }
-                    }
+                    // Update footer : numberFormat 적용
+                    let realViewData = (!ObjectUtil.isEmpty(footerCalculationOpt.isNumberFormat) && footerCalculationOpt.isNumberFormat)? Util.numberFormat(viewData) : viewData;
+                    let $cellObj = $row.find("th");
+                    let intColEqIdx = parseInt(coltoavgIdxs[colIdx]) - $cellObj.eq(0).attr('colspan') + 1;
+                    $cellObj.eq(intColEqIdx).html( realViewData );
                 }
             }   // end of 'fn_footerCalculationProcess(...)'
 
@@ -144,13 +187,13 @@ let gridUtil = {
         //---- ** grid 실제 생성
         $gridObj = $gridTableObj.DataTable(gridOptions);
 
-        //---- button 구성 관련
-        let buttonOpt = gridOptions.buttons;
-        if(buttonOpt != undefined && buttonOpt != null && typeof(buttonOpt) == "object" && buttonOpt.length > 0 ){
-            setTimeout(()=> {
-                $gridObj.buttons().container().appendTo('#'+gridTableId+'_wrapper .col-md-6:eq(0)');
-            }, 200);
-        }
+        //테이블 클릭 이벤트
+        let $DataTable = $gridTableObj.DataTable();
+        $DataTable.on( 'select', function ( e, dt, type, indexes ) {
+            if ( type === 'row' ) {
+                $selectedRowData = $DataTable.rows( indexes ).data()[0];
+            }
+        });
 
         return $gridObj;
     }

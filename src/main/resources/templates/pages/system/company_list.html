@@ -8,46 +8,58 @@
 >
 
     <head>
-        <title th:text="고객관리"></title>
+        <title th:text="회사관리"></title>
 
         <!-- 업무용 자바스크립트 (HEAD) 안에 위치 -->
-	    <script th:src="@{/js/voc/cust_list.js}"></script>
+	    <script th:src="@{/js/system/company_list.js}"></script>
 
     </head>
 <body>
 	<div class="page-container">
 		<div class="title-area">
-			<h2>고객관리</h2>
+			<h2>회사관리</h2>
 			<ul class="location-area">
 				<li class="home" onclick="goMain();"></li>
 				<li>VOC관리</li>
-				<li class="now">고객관리</li>
+				<li class="now">회사관리</li>
 			</ul>
 		</div>
 		<div class="search-area">
-		<form id="searchForm" method="post">
+		<form id="searchForm">
 			<div class="search-inner">
 				<div class="ui form">
 					<div class="fields">
-						<div class="four wide field">
-							<label>회사</label>
-							<div class="ui selection dropdown">
-								<input type="hidden" id="companyCd" name="companyCd">
-								<div class="default text">선택</div>
-								<i class="dropdown icon"></i>
+						<div class="three wide field">
+							<label>회사코드</label>
+							<input type="text" id="companyCd" name="companyCd" placeholder="회사코드" >
+						</div>
+						<div class="three wide field">
+							<label>회사명(국문)</label>
+							<input type="text" id="companyNm" name="companyNm" placeholder="회사명" >
+						</div>
+						<div class="six wide field">
+							<!-- [dev] 캘린더 영역 wrapper는 "calendar-area" 클래스 사용 -->
+							<div class="calendar-area">
+								<div class="field">
+									<label>사용시작일</label>
+									<div class="ui calendar" id="rangestart">
+										<div class="ui input right icon">
+											<i class="calendar icon"></i>
+											<input type="text" name="useStartDtFr" id="useStartDtFr" placeholder="사용시작일" >
+										</div>
+									</div>
+								</div>
+								<div class="field">
+									<!-- [dev] 종료일 텍스트 없이 빈 label를 위치 -->
+									<label></label>
+									<div class="ui calendar" id="rangeend">
+										<div class="ui input right icon">
+											<i class="calendar icon"></i>
+											<input type="text" name="useStartDtTo" id="useStartDtTo" placeholder="사용시작일" >
+										</div>
+									</div>
+								</div>
 							</div>
-						</div>
-						<div class="four wide field">
-							<label>고객명</label>
-							<input type="text" id="custNm" name="custNm" placeholder="고객명" >
-						</div>
-						<div class="four wide field">
-							<label>전화번호</label>
-							<input type="text" id="telNo" name="telNo" placeholder="전화번호" >
-						</div>
-						<div class="four wide field">
-							<label>이메일</label>
-							<input type="text" id="emailAddr" name="emailAddr" placeholder="이메일" >
 						</div>
 						<!-- [dev] 검색영역 내 조회 버튼은 "two wide field btn-search" 클래스 사용 -->
 						<div class="two wide field btn-search">
@@ -58,15 +70,27 @@
 						</div>
 					</div>
 					<div class="fields">
-						<div class="four wide field">
+						<div class="three wide field">
+							<label>사용여부</label>
+							<div class="ui selection dropdown d-useYn">
+								<input type="hidden" id="useYn" name="useYn">
+								<div class="default text">선택</div>
+								<i class="dropdown icon"></i>
+							</div>
+						</div>
+						<div class="three wide field">
+							<label>회사명(영문)</label>
+							<input type="text" id="companyNmEn" name="companyNmEn" placeholder="회사명(영문)" >
+						</div>
+						<div class="six wide field">
 							<!-- [dev] 캘린더 영역 wrapper는 "calendar-area" 클래스 사용 -->
 							<div class="calendar-area">
 								<div class="field">
-									<label>등록일</label>
+									<label>사용종료일</label>
 									<div class="ui calendar" id="rangestart">
 										<div class="ui input right icon">
 											<i class="calendar icon"></i>
-											<input type="text" name="regDtStart" placeholder="등록일" >
+											<input type="text" name="useEndDtFr" id="useEndDtFr" placeholder="사용종료일" >
 										</div>
 									</div>
 								</div>
@@ -76,15 +100,11 @@
 									<div class="ui calendar" id="rangeend">
 										<div class="ui input right icon">
 											<i class="calendar icon"></i>
-											<input type="text" name="regDtEnd" placeholder="등록일" >
+											<input type="text" name="useEndDtTo" id="useEndDtTo" placeholder="사용종료일" >
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="four wide field">
-							<label>VOC건수</label>
-							<input type="text" id="vocCnt" name="vocCnt" placeholder="VOC건수" >
 						</div>
 					</div>
 				</div>
@@ -95,39 +115,36 @@
 			<div class="btn-wrap"></div>
 
 			<div class="btn-wrap">
-				<div class="ui button btn-darkgray btn-add">등록</div>
+				<div class="ui button btn-darkgray btn-add">회사등록</div>
 				<div class="ui button btn-darkgray btn-dtl">상세</div>
 			</div>
 		</div>
 
 		<div class="table-area">
 			<div class="ui form">
-				<table id="listDataTableCust" class="display stripe hover">
+				<table id="listDataTableCompany" class="display stripe hover">
 					<colgroup>
 						<col style="width:5%">
-						<col style="width:15%">
-						<col style="width:10%">
-						<col style="width:15%">
 						<col style="width:10%">
 						<col style="width:20%">
-						<col style="width:15%">
+						<col style="width:25%">
+						<col style="width:10%">
+						<col style="width:10%">
 						<col style="width:10%">
 					</colgroup>
 					<thead>
 					<tr>
 						<th>선택</th>
-						<th>회사</th>
-						<th>고객번호</th>
-						<th>고객명</th>
-						<th>전화번호</th>
-						<th>이메일</th>
-						<th>등록일시</th>
-						<th>VOC건수</th>
+						<th>회사코드</th>
+						<th>회사명(국문)</th>
+						<th>회사명(영문)</th>
+						<th>사용여부</th>
+						<th>사용시작일</th>
+						<th>사용종료일</th>
 					</tr>
 					</thead>
 					<tbody>
 					<tr>
-						<td></td>
 						<td></td>
 						<td></td>
 						<td></td>

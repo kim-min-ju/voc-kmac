@@ -6,21 +6,27 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * 권한 ViewController 클래스
+ * 사용자 ViewController 클래스
  * 
- * @ClassName AuthViewController.java
- * @Description 권한 ViewController 클래스
+ * @ClassName UserViewController.java
+ * @Description 사용자 ViewController 클래스
  * @author mjkim
  * @since 2023. 9. 18.
  *
  */
 @Controller
-@RequestMapping("/system/menu")
-public class MenuViewController {
+@RequestMapping("/system")
+public class UserViewController {
 
-    // 화면 오픈
-    @GetMapping
+    // 사용자목록화면 오픈
+    @GetMapping("/userlist")
     public String view(Model model) {
-        return "pages/system/menu";
+        return "pages/system/user_list";
+    }
+
+    // 사용자상세화면 오픈
+    @GetMapping("/userdetail")
+    public String viewDetail(Model model) {
+        return "pages/system/user_detail";
     }
 }

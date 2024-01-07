@@ -3,29 +3,27 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="layout/layout">
 
-    <head>
-        <title>404 error page</title>
-        
-        <style>
-        #page-center { display:flex; height: 100%;}
-        #page-center .errorMessageZone {margin: auto; width: 400px !important; text-align: center;}
-        .errorMessageZone .errorMessage {font-size: 30px; padding: 30px 0px;}
-        #page-center .errorMessageZone > div.errorLine {width: 100%; height: 3px; background-color: #95B8E7;}
-        </style>
-        
+    <head th:replace="fragments/config :: ConfigFragment">
+        <title>500 error page</title>
     </head>
 
-<body>
-
-    <th:block layout:fragment="content">
-    
-    <div class="errorMessageZone">
-        <div class="errorLine"></div>
-        <div class="errorMessage">페이지를 찾을 수 없습니다.</div>
-        <div class="errorLine"></div>
-    </div>
-            
-    </th:block>
-
+    <body>
+        <div class="wrap error-page">
+            <header class="page-header"></header>
+            <div class="page-container">
+                <div class="error-area">
+                    <i class="error icon"></i>
+                    <p class="error-title">요청하신 페이지를 찾을 수 없습니다.</p>
+                    <p class="error-msg">페이지의 주소가 잘못 입력되었거나 변경 혹은 삭제되어 원하시는 페이지를 찾을 수가 없습니다.
+                        입력하신 페이지의 경로가 정확한지 확인 후 이용하시기 바랍니다.</p>
+                </div>
+                <div style="text-align: center;margin-top: 20px;">
+                    <div class="btn-wrap">
+                        <button class="ui button btn-brown" onclick="goMain();">확인</button>
+                    </div>
+                </div>
+            </div>
+            <footer th:replace="fragments/footer :: FooterFragment"></footer>
+        </div>
 </body>
 </html>
